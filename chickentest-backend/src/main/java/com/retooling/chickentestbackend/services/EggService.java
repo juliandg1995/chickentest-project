@@ -35,15 +35,15 @@ public class EggService {
 //		
 //	}
 //	
-//	// To get all eggs
-//    public List<Egg> getAllEggs() {
-//    	return eggRepository.findAll();
-//    }
-//	
-//    public List<Egg> getAllEggsByFarmOwnerId(Long farmOwnerId) {
-//        return eggRepository.findByFarmOwner_Id(farmOwnerId);
-//    }
-//
+	// To get all eggs
+    public List<Egg> getAllEggs() {
+    	return eggRepository.findAll();
+    }
+	
+    public List<Egg> getAllEggsByFarmOwnerId(Long farmOwnerId) {
+        return eggRepository.findByFarmOwner_Id(farmOwnerId);
+    }
+
 //    // Método para obtener todos los huevos no empollados
 //    public List<Egg> getAllUnhatchedEggs() {
 //        return eggRepository.findByIsHatchedFalse();
