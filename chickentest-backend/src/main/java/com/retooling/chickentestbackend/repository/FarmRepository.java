@@ -12,7 +12,7 @@ public interface FarmRepository extends CrudRepository<Farm, Long>{
 	Optional<Farm> findById(Long id);
 	Optional<Double> findMoneyById(Long farmId);
 	Optional<String> findNameById(Long farmId);
-//	Optional<List<Egg>> findEggsByFarmId(Long farmId);
+//	Optional<List<Egg>> findEggsByFarmOwner_Id(Long farmId);
 //	Optional<List<Chicken>> findChickensByFarmId(Long farmId);
 	
 }
