@@ -33,15 +33,16 @@ public class ChickenService {
 //		return chickenRepository.save(newChicken);
 //		
 //	}
-//	
-//	// To get all eggs
-//    public List<Chicken> getAllChickens() {
-//    	return chickenRepository.findAll();
-//    }
-//	
-//    public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
-//        return chickenRepository.findByFarmOwner_Id(farmOwnerId);
-//    }
+	
+  // To get all chickens
+  public List<Chicken> getAllChickens() {
+  	return chickenRepository.findAll();
+  }
+	
+  public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
+      return chickenRepository.findByFarmOwner_Id(farmOwnerId);
+  }
+
 
 
 }
