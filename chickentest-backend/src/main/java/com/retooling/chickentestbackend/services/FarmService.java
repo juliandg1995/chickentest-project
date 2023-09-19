@@ -39,11 +39,11 @@ public class FarmService {
 //        return (List<Farm>) farmRepository.findAll();
 //    }
 //    
-//    // Returns a farm, searching by ID
-//    public Optional<Farm> getFarmById(Long farmId) {
-//        return farmRepository.findById(farmId);
-//    }	
-//    
+    // Returns a farm, searching by ID
+    public Optional<Farm> getFarmById(Long farmId) {
+        return farmRepository.findById(farmId);
+    }	
+    
 //    // Returns all information in string format
 //    public String getFarmSummaryById(Long farmId) {
 //        Optional<Farm> farmOptional = this.getFarmById(farmId);

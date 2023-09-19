@@ -34,6 +34,20 @@ public class EggService {
 //		return eggRepository.save(newEgg);
 //		
 //	}
+	
+	@Transactional 
+    public Egg createEgg(double sellPrice, Long farmId) {
+        // Retrieve the farm by ID
+        Farm farm = farmService.getFarmById(farmId)
+                .orElseThrow(() -> new NoFarmFoundException("ID"));
+
+        // Create a new egg and set the farm as the owner
+        Egg newEgg = new Egg(sellPrice, farm);
+
+        // Save the egg to the database
+        return eggRepository.save(newEgg);
+    }
+	
 //	
 //	// To get all eggs
 //    public List<Egg> getAllEggs() {

@@ -45,6 +45,25 @@ public class EggController {
 //        }
 //    }
 	
+    @PostMapping("/eggs")
+    public Egg createEgg(
+            @RequestBody EggRequest eggRequest,
+            @RequestParam("farmId") Long farmId) {
+        return eggService.createEgg(eggRequest.getSellPrice(), farmId);
+    }
+    
+    class EggRequest {
+        private double sellPrice;
+
+        public double getSellPrice() {
+            return sellPrice;
+        }
+
+        public void setSellPrice(double sellPrice) {
+            this.sellPrice = sellPrice;
+        }
+    }    
+	
 //	// To get ALL eggs
 //	@GetMapping(value = "/getEggs")
 //	public ResponseEntity<List<Egg>> getEggs() {
