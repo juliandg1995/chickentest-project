@@ -43,11 +43,7 @@ public class FarmService {
     public Optional<Farm> getFarmById(Long farmId) {
         return farmRepository.findById(farmId);
     }	
-<<<<<<< HEAD
-//    
-=======
     
->>>>>>> feature/createEgg
 //    // Returns all information in string format
 //    public String getFarmSummaryById(Long farmId) {
 //        Optional<Farm> farmOptional = this.getFarmById(farmId);
