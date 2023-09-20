@@ -48,6 +48,7 @@ public class EggController {
 //    }
 	
 	// To get ALL eggs
+	// Este funciona
 	@GetMapping(value = "/getEggs")
 	public ResponseEntity<List<Egg>> getEggs() {
 		try {
@@ -59,7 +60,8 @@ public class EggController {
 	}	
 	
 	// To get ALL eggs searching BY FARM ID
-    @GetMapping("/getEggsByFarm/{farmOwnerId}")
+	// Este también funciona
+    @GetMapping(value = "/getEggsByFarmId/{farmOwnerId}")
     public ResponseEntity<List<Egg>> getEggsByFarmOwnerId(@PathVariable Long farmOwnerId) {
     	try {
 	        List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(farmOwnerId);
@@ -68,8 +70,10 @@ public class EggController {
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     	}
     }	
-
-    @PostMapping("/eggs")
+    
+    // Este no logro que lo reconozca el postman
+    // Probé de distintas maneras, usando sólo el body, sólo parámetros, pero tuve que usar con este una clase auxiliar (EggRequest, debajo)
+    @PostMapping(value = "/createEgg", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Egg> createEgg(
             @RequestBody EggRequest eggRequest,
             @RequestParam("farmId") Long farmId) {
@@ -93,28 +97,7 @@ public class EggController {
         }
     }    
 	
-//	// To get ALL eggs
-//	@GetMapping(value = "/getEggs")
-//	public ResponseEntity<List<Egg>> getEggs() {
-//		try {
-//			List<Egg> eggs = eggService.getAllEggs();
-//			return ResponseEntity.ok(eggs);
-//		} catch (EntityNotFoundException e) {
-//			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//		}
-//	}	
-//	
-//	// To get ALL eggs searching BY FARM ID
-//    @GetMapping("/getByFarm/{farmOwnerId}")
-//    public ResponseEntity<List<Egg>> getEggsByFarmOwnerId(@PathVariable Farm farmOwner) {
-//    	try {
-//	        List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(farmOwner.getId());
-//	        return ResponseEntity.ok(eggs);
-//    	} catch (EntityNotFoundException e) {
-//    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//    	}
-//    }	
-//    
+
 //	// To get all UNHATCHED eggs searching BY FARM ID
 //    @GetMapping("/getUnhatchedByFarm/{farmOwnerId}")
 //    public ResponseEntity<List<Egg>> getAllUnhatchedEggsByFarmId(@PathVariable Farm farmOwner) {

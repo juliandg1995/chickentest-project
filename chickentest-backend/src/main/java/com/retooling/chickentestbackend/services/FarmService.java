@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 import com.retooling.chickentestbackend.services.ChickenService;
@@ -30,15 +31,15 @@ public class FarmService {
 	
 	////  Methods
 	
-//	@Transactional
-//	public Farm createFarm(Farm farm) {
-//		return farmRepository.save(farm);
-//	}
-//	
-//    public List<Farm> getAllFarms() {
-//        return (List<Farm>) farmRepository.findAll();
-//    }
-//    
+	@Transactional
+	public Farm createFarm(Farm farm) {
+		return farmRepository.save(farm);
+	}
+	
+    public List<Farm> getAllFarms() {
+        return (List<Farm>) farmRepository.findAll();
+    }
+    
     // Returns a farm, searching by ID
     public Optional<Farm> getFarmById(Long farmId) {
         return farmRepository.findById(farmId);

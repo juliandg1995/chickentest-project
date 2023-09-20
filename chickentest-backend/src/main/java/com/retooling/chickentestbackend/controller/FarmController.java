@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -27,7 +26,7 @@ import com.retooling.chickentestbackend.exceptions.*;
 import com.retooling.chickentestbackend.exceptions.farm.*;
 
 @RestController
-@RequestMapping("chickentestbackend/farms")
+@RequestMapping("/farms")
 public class FarmController {
 
 	@Autowired
@@ -38,6 +37,32 @@ public class FarmController {
 //
 //		return ResponseEntity.ok(farmService.createFarm(farm));
 //	}
+	
+	// To get ALL farms
+	// Probé este método en Postman. El farmService devuelve las granjas, pero de todas maneras arroja una excepción
+	// El error dice que no puede armar el JSON
+	@GetMapping(value = "/getFarms")
+	public ResponseEntity<List<Farm>> getFarms() {
+		try {
+			List<Farm> farms = farmService.getAllFarms();
+			return ResponseEntity.ok(farms);
+		} catch (EntityNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+		}
+	}	
+	
+	// To get Farm searching BY FARM ID
+	// Mismo caso que con el anterior. El servicio trae la granja correcta, pero tira excpción igual
+    @GetMapping(value = "/getFarmById/{farmOwnerId}")
+    public ResponseEntity<Farm> getFarmById(@PathVariable Long farmOwnerId) {
+    	try {
+	        Optional<Farm> farmOptional = farmService.getFarmById(farmOwnerId);
+	        Farm farm = farmOptional.get();
+	        return ResponseEntity.ok(farm);
+    	} catch (EntityNotFoundException e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    }		
 	
 //   @GetMapping("/{id}/summary")
 //    public ResponseEntity<String> getFarmSummary(@PathVariable Long id) {

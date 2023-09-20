@@ -24,7 +24,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 import jakarta.persistence.EntityNotFoundException;
 
 @RestController
-@RequestMapping("/chicken")
+@RequestMapping("/chickens")
 public class ChickenController {
 	
 	@Autowired
@@ -39,6 +39,7 @@ public class ChickenController {
 //	}
 	
 	// To get ALL chickens
+	// Este funciona bien
 	@GetMapping(value = "/getChickens")
 	public ResponseEntity<List<Chicken>> getChickens() {
 		try {
@@ -50,7 +51,8 @@ public class ChickenController {
 	}	
 	
 	// To get ALL chickens searching BY FARM ID
-    @GetMapping("/getChickensByFarm/{farmOwnerId}")
+	// Este también funciona bien
+    @GetMapping("/getChickensByFarmId/{farmOwnerId}")
     public ResponseEntity<List<Chicken>> getChickensByFarmOwnerId(@PathVariable Long farmOwnerId) {
     	try {
 	        List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(farmOwnerId);

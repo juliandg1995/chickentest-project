@@ -21,7 +21,12 @@ public class Chicken extends Product {
     
     private static int daysToPutEggs = 15;
     
-	/** Constructor **/
+	/** Constructors **/
+    
+	public Chicken() {
+		super();
+	}
+    
 	public Chicken(double sellPrice,  int age, Farm farmOwner) {
 		super(sellPrice, farmOwner);
 		this.daysToEggsCountdown = daysToPutEggs;
