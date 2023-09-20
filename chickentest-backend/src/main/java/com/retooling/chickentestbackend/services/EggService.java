@@ -23,6 +23,7 @@ public class EggService {
 	@Autowired
 	private FarmService farmService;
 	
+<<<<<<< HEAD
 	@Transactional
 	public Egg createEgg(Egg newEgg) throws NoFarmFoundException {
 		
@@ -34,6 +35,33 @@ public class EggService {
 		return eggRepository.save(newEgg);
 		
 	}
+=======
+//	@Transactional
+//	public Egg createEgg(Egg newEgg) throws NoFarmFoundException {
+//		
+//		// Retrieving farm using farm ID
+//        Farm farmOwner = farmService.getFarmById(newEgg.getfarmOwner().getId())
+//                .orElseThrow(() -> new NoFarmFoundException("ID"));
+//        
+//        // Creating egg
+//		return eggRepository.save(newEgg);
+//		
+//	}
+	
+	@Transactional 
+    public Egg createEgg(double sellPrice, Long farmId) {
+        // Retrieve the farm by ID
+        Farm farm = farmService.getFarmById(farmId)
+                .orElseThrow(() -> new NoFarmFoundException("ID"));
+
+        // Create a new egg and set the farm as the owner
+        Egg newEgg = new Egg(sellPrice, farm);
+
+        // Save the egg to the database
+        return eggRepository.save(newEgg);
+    }
+	
+>>>>>>> feature/createEgg
 //	
 	// To get all eggs
     public List<Egg> getAllEggs() {
