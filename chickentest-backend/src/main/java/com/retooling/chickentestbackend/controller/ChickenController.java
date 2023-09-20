@@ -23,8 +23,8 @@ import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@RestController()
-@RequestMapping(value = "/api")
+@RestController
+@RequestMapping("/chicken")
 public class ChickenController {
 	
 	@Autowired
@@ -59,6 +59,5 @@ public class ChickenController {
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     	}
     }	
-
 
 }
