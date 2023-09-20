@@ -70,11 +70,16 @@ public class EggController {
     }	
 
     @PostMapping("/eggs")
-    public Egg createEgg(
+    public ResponseEntity<Egg> createEgg(
             @RequestBody EggRequest eggRequest,
             @RequestParam("farmId") Long farmId) {
-        return eggService.createEgg(eggRequest.getSellPrice(), farmId);
-    }
+    	try {
+    		Egg newEgg = eggService.createEgg(eggRequest.getSellPrice(), farmId);
+    		return ResponseEntity.ok(newEgg);
+    	} catch(NoFarmFoundException e) {
+    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    	}
+    }	
     
     class EggRequest {
         private double sellPrice;
