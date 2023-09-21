@@ -6,6 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.FarmRepository;
@@ -45,6 +46,35 @@ public class FarmService {
         return farmRepository.findById(farmId);
     }	
     
+    public String getFarmSummaryById(Long farmId) throws NoFarmFoundException {
+    	
+        // Buscar la granja por su ID
+        Optional<Farm> farmOptional = farmRepository.findById(farmId);
+        
+        if (farmOptional.isPresent()) {
+            Farm farm = farmOptional.get();
+            
+  	      	// Si existe la granja, se muestra la info
+            String farmName = farm.getName();
+            Long farmIdCode = farm.getId();
+            double farmMoney = farm.getMoney();
+            int chickenCount = farm.getChickens().size();
+            int eggCount = farm.getEggs().size();
+
+            // Formatear el resumen de la granja como una cadena
+            String farmSummary = "Farm Name: " + farmName + "\n";
+            farmSummary += "Id: " + farmIdCode +"\n";
+            farmSummary += "Money: " + farmMoney + "\n";
+            farmSummary += "Number of Chickens: " + chickenCount + "\n";
+            farmSummary += "Number of Eggs: " + eggCount + "\n";
+
+            return farmSummary;
+        } else {
+            // Si no se encuentra la granja, lanza la excepción con el valor "ID"
+            throw new NoFarmFoundException("ID");
+        }
+    }    
+    
 //    // Returns all information in string format
 //    public String getFarmSummaryById(Long farmId) {
 //        Optional<Farm> farmOptional = this.getFarmById(farmId);
@@ -63,25 +93,18 @@ public class FarmService {
 //        }
 //    }
 //    
-//    private int countEggsInFarm(Farm farm) {
-//        return farm.getEggs().size();
-//    }
-//
-//    private int countChickensInFarm(Farm farm) {
-//        return farm.getChickens().size();
-//    }
-//    
-//    public Double getMoneyById(Long farmId) {
-//    	 Optional<Double> moneyOptional = farmRepository.findMoneyById(farmId);
-//         
-//         return moneyOptional.orElse(null);
-//     }
-//    
-//    public String getNameById(Long farmId) {
-//   	 Optional<String> nameOptional = farmRepository.findNameById(farmId);
-//        
-//        return nameOptional.orElse(null);
-//    }    
+    
+    public Double getMoneyById(Long farmId) {
+    	 Optional<Double> moneyOptional = farmRepository.findMoneyById(farmId);
+         
+         return moneyOptional.orElse(null);
+     }
+    
+    public String getNameById(Long farmId) {
+   	 Optional<String> nameOptional = farmRepository.findNameById(farmId);
+        
+        return nameOptional.orElse(null);
+    }    
 //	
 //	public List<Egg> getEggs() {
 //

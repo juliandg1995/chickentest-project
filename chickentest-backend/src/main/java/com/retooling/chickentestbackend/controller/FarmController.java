@@ -64,14 +64,15 @@ public class FarmController {
     	}
     }		
 	
-//   @GetMapping("/{id}/summary")
-//    public ResponseEntity<String> getFarmSummary(@PathVariable Long id) {
-//        String farmSummary = farmService.getFarmSummaryById(id);
-//        if (farmSummary.equals("Farm not found")) {
-//            return ResponseEntity.notFound().build();
-//        }
-//        return ResponseEntity.ok(farmSummary);
-//    }
+   @GetMapping(value = "getFarm/{id}/summary")
+    public ResponseEntity<String> getFarmSummary(@PathVariable Long id) {
+        try {
+        	String farmSummary = farmService.getFarmSummaryById(id);
+            return ResponseEntity.ok(farmSummary);
+        } catch(NoFarmFoundException e) {
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + "ID");
+        }
+    }
 //   
 //   @GetMapping("/{id}/money")
 //   public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
