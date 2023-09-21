@@ -58,7 +58,7 @@ public class EggController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
 		}
 	}	
-	
+
 	// To get ALL eggs searching BY FARM ID
 	// Este también funciona
     @GetMapping(value = "/getEggsByFarmId/{farmOwnerId}")
@@ -85,6 +85,7 @@ public class EggController {
     	}
     }	
     
+    // Auxiliary class (check where to be placed)
     class EggRequest {
         private double sellPrice;
 
@@ -98,28 +99,28 @@ public class EggController {
     }    
 	
 
-//	// To get all UNHATCHED eggs searching BY FARM ID
-//    @GetMapping("/getUnhatchedByFarm/{farmOwnerId}")
-//    public ResponseEntity<List<Egg>> getAllUnhatchedEggsByFarmId(@PathVariable Farm farmOwner) {
-//    	try {
-//	        List<Egg> eggs = eggService.getAllUnhatchedEggsByFarmId(farmOwner.getId());
-//	        return ResponseEntity.ok(eggs);
-//    	} catch (EntityNotFoundException e) {
-//    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//    	}
-//    }	
-//    
-//	// To get all UNHATCHED eggs searching BY FARM ID
-//    @GetMapping("/getHatchedByFarm/{farmOwnerId}")
-//    public ResponseEntity<List<Egg>> getAllHatchedEggsByFarmId(@PathVariable Farm farmOwner) {
-//    	try {
-//	        List<Egg> eggs = eggService.getAllHatchedEggsByFarmId(farmOwner.getId());
-//	        return ResponseEntity.ok(eggs);
-//    	} catch (EntityNotFoundException e) {
-//    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//    	}
-//    }	
-//	
+	// To get all UNHATCHED eggs searching BY FARM ID
+    @GetMapping(value = "/getUnhatchedEggsByFarmId/{farmId}")
+    public ResponseEntity<List<Egg>> getUnhatchedEggsByFarmId(@PathVariable Long farmId) {
+    	try {
+	        List<Egg> eggs = eggService.getAllUnhatchedEggsByFarmId(farmId);
+	        return ResponseEntity.ok(eggs);
+    	} catch (EntityNotFoundException e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    }	
+    
+	// To get all HATCHED eggs searching BY FARM ID
+    @GetMapping(value ="/getHatchedEggsByFarmId/{farmId}")
+    public ResponseEntity<List<Egg>> getHatchedEggsByFarmId(@PathVariable Long farmId) {
+    	try {
+	        List<Egg> eggs = eggService.getAllHatchedEggsByFarmId(farmId);
+	        return ResponseEntity.ok(eggs);
+    	} catch (EntityNotFoundException e) {
+    		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    	}
+    }	
+	
 	
 
 }

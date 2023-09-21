@@ -70,46 +70,46 @@ public class EggService {
         return eggRepository.findByFarmOwner_Id(farmOwnerId);
     }
 
-//    // Método para obtener todos los huevos no empollados
-//    public List<Egg> getAllUnhatchedEggs() {
-//        return eggRepository.findByIsHatchedFalse();
-//    }
-//    
-//    // Método para obtener todos los huevos empollados
-//    public List<Egg> getAllHatchedEggs() {
-//        return eggRepository.findByIsHatchedTrue();
-//    }
-//    
-//    
-//    // Método para obtener todos los huevos NO empollados de una granja por su ID
-//    public List<Egg> getAllUnhatchedEggsByFarmId(Long farmId) {
-//    	
-//    	List<Egg> eggs = this.getAllEggsByFarmOwnerId(farmId);
-//    	
-//    	if (eggs.isEmpty()) {
-//    		return null;
-//    	}
-//    	
-//        // Filtrar los huevos no empollados usando Stream
-//        return eggs.stream()
-//                .filter(egg -> !egg.getIsHatched())
-//                .collect(Collectors.toList());
-//    }
-//    
-//
-//    // Método para obtener todos los huevos empollados de una granja por su ID
-//    public List<Egg> getAllHatchedEggsByFarmId(Long farmId) {
-//    	
-//    	List<Egg> eggs = this.getAllEggsByFarmOwnerId(farmId);
-//    	
-//    	if (eggs.isEmpty()) {
-//    		return null;
-//    	}
-//    	
-//        // Filtrar los huevos no empollados usando Stream
-//        return eggs.stream()
-//                .filter(egg -> egg.getIsHatched())
-//                .collect(Collectors.toList());
-//    }
+    // Método para obtener todos los huevos no empollados
+    public List<Egg> getAllUnhatchedEggs() {
+        return eggRepository.findByIsHatchedFalse();
+    }
+    
+    // Método para obtener todos los huevos empollados
+    public List<Egg> getAllHatchedEggs() {
+        return eggRepository.findByIsHatchedTrue();
+    }
+    
+    
+    // Método para obtener todos los huevos NO empollados de una granja por su ID
+    public List<Egg> getAllUnhatchedEggsByFarmId(Long farmId) {
+    	
+    	List<Egg> eggs = this.getAllEggsByFarmOwnerId(farmId);
+    	
+    	if (eggs.isEmpty()) {
+    		return null;
+    	}
+    	
+        // Filtrar los huevos no empollados usando Stream
+        return eggs.stream()
+                .filter(egg -> !egg.getIsHatched())
+                .collect(Collectors.toList());
+    }
+    
+
+    // Método para obtener todos los huevos empollados de una granja por su ID
+    public List<Egg> getAllHatchedEggsByFarmId(Long farmId) {
+    	
+    	List<Egg> eggs = this.getAllEggsByFarmOwnerId(farmId);
+    	
+    	if (eggs.isEmpty()) {
+    		return null;
+    	}
+    	
+        // Filtrar los huevos no empollados usando Stream
+        return eggs.stream()
+                .filter(egg -> egg.getIsHatched())
+                .collect(Collectors.toList());
+    }
 
 }
