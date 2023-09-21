@@ -48,20 +48,20 @@ public class FarmService {
     
     public String getFarmSummaryById(Long farmId) throws NoFarmFoundException {
     	
-        // Buscar la granja por su ID
+        // Searching Farm by Id
         Optional<Farm> farmOptional = farmRepository.findById(farmId);
         
         if (farmOptional.isPresent()) {
             Farm farm = farmOptional.get();
             
-  	      	// Si existe la granja, se muestra la info
+  	      	// If farm exists, get its properties info
             String farmName = farm.getName();
             Long farmIdCode = farm.getId();
             double farmMoney = farm.getMoney();
             int chickenCount = farm.getChickens().size();
             int eggCount = farm.getEggs().size();
 
-            // Formatear el resumen de la granja como una cadena
+            // Build the string with the info
             String farmSummary = "Farm Name: " + farmName + "\n";
             farmSummary += "Id: " + farmIdCode +"\n";
             farmSummary += "Money: " + farmMoney + "\n";
@@ -70,29 +70,11 @@ public class FarmService {
 
             return farmSummary;
         } else {
-            // Si no se encuentra la granja, lanza la excepción con el valor "ID"
+            // If not found, throw exception with farm's missing information ("ID")
             throw new NoFarmFoundException("ID");
         }
     }    
-    
-//    // Returns all information in string format
-//    public String getFarmSummaryById(Long farmId) {
-//        Optional<Farm> farmOptional = this.getFarmById(farmId);
-//        if (farmOptional.isPresent()) {
-//            Farm farm = farmOptional.get();
-//            int eggCount = countEggsInFarm(farm);
-//            int chickenCount = countChickensInFarm(farm);
-//
-//            return "Farm ID: " + farm.getId() + "\n" +
-//                    "Farm Name: " + farm.getName() + "\n" +
-//                    "Egg Count: " + eggCount + "\n" +
-//                    "Chicken Count: " + chickenCount + "\n" +
-//                    "Money: " + farm.getMoney();
-//        } else {
-//            return "Farm not found";
-//        }
-//    }
-//    
+        
     
     public Double getMoneyById(Long farmId) {
     	 Optional<Double> moneyOptional = farmRepository.findMoneyById(farmId);
