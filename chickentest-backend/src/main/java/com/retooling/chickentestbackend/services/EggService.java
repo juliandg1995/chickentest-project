@@ -90,7 +90,7 @@ public class EggService {
     		return null;
     	}
     	
-        // Filtrar los huevos no empollados usando Stream
+        // Filtrado de huevos no empollados
         return eggs.stream()
                 .filter(egg -> !egg.getIsHatched())
                 .collect(Collectors.toList());
@@ -106,7 +106,7 @@ public class EggService {
     		return null;
     	}
     	
-        // Filtrar los huevos no empollados usando Stream
+        // Filtrado de huevos empollados
         return eggs.stream()
                 .filter(egg -> egg.getIsHatched())
                 .collect(Collectors.toList());

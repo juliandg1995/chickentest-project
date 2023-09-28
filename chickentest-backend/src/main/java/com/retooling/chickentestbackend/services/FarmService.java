@@ -6,13 +6,13 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.retooling.chickentestbackend.exceptions.farm.InsufficientMoneyException;
+import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
-import com.retooling.chickentestbackend.model.Egg;
+import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.FarmRepository;
-import com.retooling.chickentestbackend.services.ChickenService;
-import com.retooling.chickentestbackend.services.EggService;
-
 
 import jakarta.transaction.Transactional; // -> Investigar qué hace y cuándo se usa
 
@@ -23,7 +23,8 @@ public class FarmService {
 	
 	@Autowired
 	private FarmRepository farmRepository;
-	
+	private ChickenService chickenService;
+
 //	@Autowired	
 //	private ChickenService chickenService;
 	
@@ -87,74 +88,44 @@ public class FarmService {
         
         return nameOptional.orElse(null);
     }    
-//	
-//	public List<Egg> getEggs() {
-//
-//		return farmRepository.getEggs()
-//				.orElseThrow( () -> new EntityNotFoundException("La granja no tiene huevos"));
-//	}
-//	
-//	public List<Egg> getHatchedEggs() {
-//		
-//		List<Egg> hatchedEggs = farmRepository.
-//								getEggs().
-//								get().stream().
-//								filter(egg -> egg.isHatched()).
-//								collect(Collectors.toList());
-//		return hatchedEggs;
-//		
-//	}
-//	
-//	
-//	public List<Egg> getNonHatchedEggs() {
-//		
-//		List<Egg> notHatchedEggs = farmRepository.
-//								getEggs().
-//								get().stream().
-//								filter(egg -> !egg.isHatched()).
-//								collect(Collectors.toList());
-//		return notHatchedEggs;
-//		
-//	}
-//	
-//	public List<Chicken> getChickens() {
-//
-//		return farmRepository.getChickens()
-//				.orElseThrow( () -> new EntityNotFoundException("La granja no tiene gallinas"));
-//	}
-//	
-//	@Transactional
-//	public boolean buyChickens(int amount, double price) 
-//		   throws InsufficientMoneyException, NoChickensException, MaxStockException {
-//	    
-//		List<Chicken> chickens = farmRepository.getChickens()
-//	            .orElseThrow(NoChickensException::new);
-//		
-//		// Max Stock Limit check
-//		int newStock = chickens.size() + amount;
-//		if ( newStock > Farm.getMaxStockOfChickens() ) {
-//			// Check allowed stock excess
-//			int excess = newStock - Farm.getMaxStockOfChickens();
-//			if( excess >= 20 ) {
-//			   throw new MaxStockException("Chickens");
-//			}
-//			// If excess amount is allowed, discard the excess and set stock discount 
-//			amount -= excess;
-//		//	this.setDiscount(chickens);  // El parámetro formal del tipo Product no admite el tipo Chicken
-//		}
-//
-//	    double total = price * amount;
-//	    
-//	    // Insufficient money
-//	    if (farmRepository.getMoney() < total) {
-//	        throw new InsufficientMoneyException();
-//	    }
-//	    
-//	    //Cattle and money amount update
-//	    farmRepository.addChickens(amount);
+
+
+	@Transactional
+	public boolean buyChickens(int amount, double price, Long farmId) 
+		   throws InsufficientMoneyException, NoChickensException, MaxStockException, NoFarmFoundException {
+		
+        Farm farm = this.getFarmById(farmId).orElseThrow(() -> new NoFarmFoundException("ID"));
+	    
+		List<Chicken> chickens = farm.getChickens();
+		if (chickens.isEmpty()) {
+		    throw new NoChickensException();
+		}
+		
+		// Max Stock Limit check
+		int newStock = chickens.size() + amount;
+		if ( newStock > Farm.getMaxStockOfChickens() ) {
+			// Check allowed stock excess
+			int excess = newStock - Farm.getMaxStockOfChickens();
+			if( excess >= 20 ) {
+			   throw new MaxStockException("Chickens");
+			}
+			// If excess amount is allowed, discard the excess and set stock discount 
+			amount -= excess;
+		//	this.setDiscount(chickens);  // El parámetro formal del tipo Product no admite el tipo Chicken
+		}
+
+	    double total = price * amount;
+	    
+	    // Insufficient money
+	    if (farm.getMoney() < total) {
+	        throw new InsufficientMoneyException();
+	    }
+	    
+	    //Cattle and money amount update
+//	    farmRepository.addChickens(amount); // -> Tengo que crear los huevos en este service
 //	    farmRepository.spendMoney(total);
-//	    return true;
-//	}
+	    return true;
+	}
 //	
 //	@Transactional
 //	public boolean buyEggs(int amount, double price) 

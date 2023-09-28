@@ -14,5 +14,6 @@ public interface FarmRepository extends CrudRepository<Farm, Long>{
 	Optional<String> findNameById(Long farmId);
 //	Optional<List<Egg>> findEggsByFarmOwner_Id(Long farmId);
 //	Optional<List<Chicken>> findChickensByFarmId(Long farmId);
+//	Optional<Farm> addChickensToFarm(Long farmId, List<Chicken> newChickens);
 	
 }
