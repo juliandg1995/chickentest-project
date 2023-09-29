@@ -5,6 +5,9 @@ import java.util.*;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name="farms")
@@ -15,6 +18,8 @@ public class Farm {
 	@Column(name="id")
 	private Long id;
 	
+	@NotBlank(message = "Farm name cannot be blank")
+	@Size(max = 255, message = "Farm name should not exceed 255 characters")
 	private String name;
 	
 	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "farmOwner")
@@ -25,6 +30,7 @@ public class Farm {
 	@JsonManagedReference
 	private List<Chicken> chickens;
 	
+	@Positive(message = "Money value should be positive")
 	private double money;
 	
 	private static int maxChickenStock = 500;

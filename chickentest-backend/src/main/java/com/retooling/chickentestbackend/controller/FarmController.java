@@ -33,11 +33,13 @@ public class FarmController {
 	private FarmService farmService;
 
 //	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) {
-//
-//		return ResponseEntity.ok(farmService.createFarm(farm));
+//	public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) throws CannotCreateFarmException {
+//		try {
+//			return ResponseEntity.ok(farmService.createFarm(farm));
+//		} catch(CannotCreateFarmException e){
+//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+//		}
 //	}
-	
 	// To get ALL farms
 	// Probé este método en Postman. El farmService devuelve las granjas, pero de todas maneras arroja una excepción
 	// El error dice que no puede armar el JSON

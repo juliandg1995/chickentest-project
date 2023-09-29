@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.retooling.chickentestbackend.dto.EggRequestDTO;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -53,10 +54,9 @@ public class EggController {
 	@Transactional
     @PostMapping(value = "/createEgg", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Egg> createEgg(
-            @RequestBody EggRequest eggRequest,
-            @RequestParam("farmId") Long farmId) {
+            @RequestBody EggRequestDTO eggRequest) {
     	try {
-    		Egg newEgg = eggService.createEgg(eggRequest.getSellPrice(), farmId);
+    		Egg newEgg = eggService.createEgg(eggRequest.getSellPrice(), eggRequest.getFarmId());
     		return ResponseEntity.ok(newEgg);
     	} catch(NoFarmFoundException e) {
     		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
