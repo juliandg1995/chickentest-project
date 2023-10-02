@@ -34,6 +34,19 @@ public class ChickenService {
 //		
 //	}
 	
+	@Transactional 
+    public Chicken createChicken(double sellPrice, int age, Long farmId) throws NoFarmFoundException {
+        // Retrieve the farm by ID
+        Farm farm = farmService.getFarmById(farmId)
+                .orElseThrow(() -> new NoFarmFoundException("ID"));
+
+        // Create a new chicken and set the farm as the owner
+        Chicken newChicken = new Chicken(sellPrice, age, farm);
+
+        // Save the egg to the database
+        return chickenRepository.save(newChicken);
+    }	
+	
   // To get all chickens
   public List<Chicken> getAllChickens() {
   	return chickenRepository.findAll();

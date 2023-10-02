@@ -17,11 +17,16 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.model.Farm;
+import com.retooling.chickentestbackend.dto.ChickenRequestDTO;
+import com.retooling.chickentestbackend.dto.EggRequestDTO;
+import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Chicken;
+import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.services.ChickenService;
 import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 @RestController
 @RequestMapping("/chickens")
@@ -37,6 +42,20 @@ public class ChickenController {
 //
 //		return ResponseEntity.ok(chickenService.createChicken(sell_price, age));
 //	}
+
+	@Transactional
+    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<Chicken> createChicken(
+            @RequestBody ChickenRequestDTO chickenRequest) {
+    	try {
+    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
+    														  chickenRequest.getAge(),
+    														  chickenRequest.getFarmId());
+    		return ResponseEntity.ok(newChicken);
+    	} catch(NoFarmFoundException e) {
+    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    	}
+    }
 	
 	// To get ALL chickens
 	// Este funciona bien

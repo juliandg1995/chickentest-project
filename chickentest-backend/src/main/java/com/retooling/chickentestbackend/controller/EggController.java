@@ -34,23 +34,7 @@ public class EggController {
 	@Autowired 
 	private FarmService farmService;
 	
-//	// Create a new egg 
-//    @PostMapping(value = "/createEgg", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Egg> createEgg(@RequestBody Egg egg) {
-//        if (egg.getSellPrice() < 0) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//        try {
-//        	Egg newEgg = eggService.createEgg(egg);
-//        	return ResponseEntity.ok(newEgg);        	
-//
-//        } catch (NoFarmFoundException e) {
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
-//        }
-//    }
-	
-    // Este no logro que lo reconozca el postman
-    // Probé de distintas maneras, usando sólo el body, sólo parámetros, pero tuve que usar con este una clase auxiliar (EggRequest, debajo)
+	// Funciona utilizando un objeto DTO (en package chickentestbackend.dto)
 	@Transactional
     @PostMapping(value = "/createEgg", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Egg> createEgg(
