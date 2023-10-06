@@ -31,25 +31,11 @@ import com.retooling.chickentestbackend.exceptions.*;
 import com.retooling.chickentestbackend.exceptions.farm.*;
 
 @RestController
-@RequestMapping("/farms")
+@RequestMapping("/farm")
 public class FarmController {
 
 	@Autowired
 	private FarmService farmService;
-	
-//	@Transactional
-//    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Chicken> createChicken(
-//            @RequestBody ChickenRequestDTO chickenRequest) {
-//    	try {
-//    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
-//    														  chickenRequest.getAge(),
-//    														  chickenRequest.getFarmId());
-//    		return ResponseEntity.ok(newChicken);
-//    	} catch(NoFarmFoundException e) {
-//    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//    	}
-//    }	
 	
 	@Transactional
 	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -61,9 +47,18 @@ public class FarmController {
 		}
 	}
 	
+	@Transactional
+	@DeleteMapping(value = "/deleteFarm{farmId}")
+	public ResponseEntity<String> deleteFarm(@PathVariable Long farmId){
+		try {
+			farmService.deleteFarmById(farmId);
+			return new ResponseEntity<>("Farm with ID " + farmId + " deleted successfully", HttpStatus.OK);
+		}catch(Exception e) {
+			return new ResponseEntity<>("Failed to delete farm with ID " + farmId, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
+	
 	// To get ALL farms
-	// Probé este método en Postman. El farmService devuelve las granjas, pero de todas maneras arroja una excepción
-	// El error dice que no puede armar el JSON
 	@GetMapping(value = "/getFarms")
 	public ResponseEntity<List<Farm>> getFarms() {
 		try {
@@ -75,7 +70,6 @@ public class FarmController {
 	}	
 	
 	// To get Farm searching BY FARM ID
-	// Mismo caso que con el anterior. El servicio trae la granja correcta, pero tira excpción igual
     @GetMapping(value = "/getFarmById/{farmOwnerId}")
     public ResponseEntity<Farm> getFarmById(@PathVariable Long farmOwnerId) {
     	try {

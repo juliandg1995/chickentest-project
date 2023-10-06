@@ -2,6 +2,7 @@ package com.retooling.chickentestbackend.services;
 
 import jakarta.transaction.Transactional;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.*;
 import com.retooling.chickentestbackend.repository.ChickenRepository;
@@ -9,6 +10,7 @@ import com.retooling.chickentestbackend.repository.ChickenRepository;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,18 +23,6 @@ public class ChickenService {
 	@Autowired
 	private FarmService farmService;	
 	
-
-//	@Transactional
-//	public Chicken createChicken(Chicken newChicken) throws NoFarmFoundException {
-//		
-//		// Retrieving farm using farm ID
-//        Farm farmOwner = farmService.getFarmById(newChicken.getfarmOwner().getId())
-//                .orElseThrow(() -> new NoFarmFoundException("ID"));
-//        
-//        // Creating chicken
-//		return chickenRepository.save(newChicken);
-//		
-//	}
 	
 	@Transactional 
     public Chicken createChicken(double sellPrice, int age, Long farmId) throws NoFarmFoundException {

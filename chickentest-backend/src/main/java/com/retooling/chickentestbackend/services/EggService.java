@@ -3,6 +3,7 @@ package com.retooling.chickentestbackend.services;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,10 +39,10 @@ public class EggService {
         return eggRepository.save(newEgg);
     }
 
-//    // Delete the egg from the database
-//    public void deleteEgg(Long eggId) {
-//        eggRepository.deleteById(eggId);
-//    }
+    // Delete the egg from the database
+    public void deleteEgg(Long eggId) {
+        eggRepository.deleteById(eggId);
+    }
 	
 	// To get all eggs
     public List<Egg> getAllEggs() {
@@ -95,19 +96,19 @@ public class EggService {
     }
     
 
-//    public void passDays(int days){
-//    	this.getAllEggs().forEach(egg -> {
-//    		egg.passDays(days);
-//    		if (egg.getIsEcloded()) {
-////    			try {
-//    				this.deleteEgg(egg.getId());
-//    				farmService.removeEggFromList(egg.getfarmOwner().getId(), egg);
-//    			// Cómo hago para lanzar una excepción desde aquí, y que llegue hasta el controller de "passDays()"?
-////    			} catch(FailedCrudOperationException e){
-////    				throw new FailedCrudOperationException("Could not remove egg");
-////    			}
-//    		}
-//    	});
-//    }
+    public void passDays(int days){
+    	this.getAllEggs().forEach(egg -> {
+    		egg.passDays(days);
+    		if (egg.getIsEcloded()) {
+//    			try {
+    				this.deleteEgg(egg.getId());
+    				farmService.manageEclodedEgg(egg);
+    			// Cómo hago para lanzar una excepción desde aquí, y que llegue hasta el controller de "passDays()"?
+//    			} catch(FailedCrudOperationException e){
+//    				throw new FailedCrudOperationException("Could not remove egg");
+//    			}
+    		}
+    	});
+    }
 
 }
