@@ -57,7 +57,7 @@ public abstract class Product {
 		return farmOwner;
 	}
 
-	public abstract void passADay();
+	public abstract void passDays(int days);
 
 	public abstract boolean isDiscountMaterial();
 

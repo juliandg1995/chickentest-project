@@ -1,5 +1,6 @@
 package com.retooling.chickentestbackend.controller;
 
+import java.security.InvalidParameterException;
 import java.util.*;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +15,18 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.transaction.Transactional;
 
 import com.retooling.chickentestbackend.repository.*;
 import com.retooling.chickentestbackend.model.*;
+import com.retooling.chickentestbackend.dto.ChickenRequestDTO;
+import com.retooling.chickentestbackend.dto.FarmRequestDTO;
 import com.retooling.chickentestbackend.exceptions.*;
 import com.retooling.chickentestbackend.exceptions.farm.*;
 
@@ -31,15 +36,31 @@ public class FarmController {
 
 	@Autowired
 	private FarmService farmService;
-
-//	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Farm> createFarm(@RequestBody Farm farm) throws CannotCreateFarmException {
-//		try {
-//			return ResponseEntity.ok(farmService.createFarm(farm));
-//		} catch(CannotCreateFarmException e){
-//			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-//		}
-//	}
+	
+//	@Transactional
+//    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Chicken> createChicken(
+//            @RequestBody ChickenRequestDTO chickenRequest) {
+//    	try {
+//    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
+//    														  chickenRequest.getAge(),
+//    														  chickenRequest.getFarmId());
+//    		return ResponseEntity.ok(newChicken);
+//    	} catch(NoFarmFoundException e) {
+//    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//    	}
+//    }	
+	
+	@Transactional
+	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<Farm> createFarm(@RequestBody FarmRequestDTO farmRequest) {
+		try {
+			return ResponseEntity.ok(farmService.createFarm(farmRequest.getName(), farmRequest.getMoney()));
+		} catch(Exception e){
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}
+	
 	// To get ALL farms
 	// Probé este método en Postman. El farmService devuelve las granjas, pero de todas maneras arroja una excepción
 	// El error dice que no puede armar el JSON
@@ -75,7 +96,20 @@ public class FarmController {
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + "ID");
         }
     }
-//   
+   
+	
+//	@PostMapping 
+//	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
+//		try {
+//			farmService.passDays(numberOfDays);
+//			return ResponseEntity.ok(numberOfDays + " have passed successfully");
+//		} catch(InvalidParameterException e) {
+//			return ResponseEntity.badRequest().body(e.getMessage());
+//        } catch (Exception e) {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error occurred");
+//        }
+//	}   
+
 //   @GetMapping("/{id}/money")
 //   public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
 //       Double money = farmService.getMoneyById(id);

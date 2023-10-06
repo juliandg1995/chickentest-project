@@ -76,8 +76,16 @@ public class Farm {
 		return chickens;
 	}
 	
+	public void setChickens(List<Chicken> chickens){
+		this.chickens = chickens;
+	}
+	
 	public List<Egg> getEggs(){
 		return eggs;
+	}
+	
+	public void setEggs(List<Egg> eggs) {
+		this.eggs = eggs;
 	}
 	
 	public void passADay(){

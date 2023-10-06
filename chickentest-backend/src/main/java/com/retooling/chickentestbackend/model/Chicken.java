@@ -60,8 +60,10 @@ public class Chicken extends Product {
 	}
 	
 	@Override
-	public void passADay() {
-		this.daysToEggsCountdown++;
+	public void passDays(int days) {
+		for (int i = 0; i < days; i++) {
+			this.daysToEggsCountdown++;
+		}		
 	}
 	
 	public void hatchEggs(List<Egg> eggs) {

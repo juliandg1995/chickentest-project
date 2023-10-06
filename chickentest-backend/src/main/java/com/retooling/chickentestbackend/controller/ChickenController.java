@@ -43,19 +43,19 @@ public class ChickenController {
 //		return ResponseEntity.ok(chickenService.createChicken(sell_price, age));
 //	}
 
-	@Transactional
-    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Chicken> createChicken(
-            @RequestBody ChickenRequestDTO chickenRequest) {
-    	try {
-    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
-    														  chickenRequest.getAge(),
-    														  chickenRequest.getFarmId());
-    		return ResponseEntity.ok(newChicken);
-    	} catch(NoFarmFoundException e) {
-    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-    	}
-    }
+//	@Transactional
+//    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
+//    public ResponseEntity<Chicken> createChicken(
+//            @RequestBody ChickenRequestDTO chickenRequest) {
+//    	try {
+//    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
+//    														  chickenRequest.getAge(),
+//    														  chickenRequest.getFarmId());
+//    		return ResponseEntity.ok(newChicken);
+//    	} catch(NoFarmFoundException e) {
+//    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+//    	}
+//    }
 	
 	// To get ALL chickens
 	// Este funciona bien

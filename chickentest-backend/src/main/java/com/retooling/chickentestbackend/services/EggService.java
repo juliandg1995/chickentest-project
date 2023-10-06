@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.retooling.chickentestbackend.exceptions.farm.FailedCrudOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -36,8 +37,12 @@ public class EggService {
         // Save the egg to the database
         return eggRepository.save(newEgg);
     }
-//	
-//	
+
+//    // Delete the egg from the database
+//    public void deleteEgg(Long eggId) {
+//        eggRepository.deleteById(eggId);
+//    }
+	
 	// To get all eggs
     public List<Egg> getAllEggs() {
     	return eggRepository.findAll();
@@ -88,5 +93,21 @@ public class EggService {
                 .filter(egg -> egg.getIsHatched())
                 .collect(Collectors.toList());
     }
+    
+
+//    public void passDays(int days){
+//    	this.getAllEggs().forEach(egg -> {
+//    		egg.passDays(days);
+//    		if (egg.getIsEcloded()) {
+////    			try {
+//    				this.deleteEgg(egg.getId());
+//    				farmService.removeEggFromList(egg.getfarmOwner().getId(), egg);
+//    			// Cómo hago para lanzar una excepción desde aquí, y que llegue hasta el controller de "passDays()"?
+////    			} catch(FailedCrudOperationException e){
+////    				throw new FailedCrudOperationException("Could not remove egg");
+////    			}
+//    		}
+//    	});
+//    }
 
 }
