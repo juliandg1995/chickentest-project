@@ -55,16 +55,16 @@ public class Egg extends Product {
 		return isEcloded;
 	}
 
-	@Override
-	public void passADay() {
-		this.ageInDays++;
-		if (isHatched) {
-			this.chickenCountdown-- ;
-			if (chickenCountdown == 0) {
-				this.eclode();
-			}
-		}
-	}
+//	@Override
+//	public void passADay() {
+//		this.ageInDays++;
+//		if (isHatched) {
+//			this.chickenCountdown-- ;
+//			if (chickenCountdown == 0) {
+//				this.eclode();
+//			}
+//		}
+//	}
 	
 	@Override
 	public boolean isDiscountMaterial() {
