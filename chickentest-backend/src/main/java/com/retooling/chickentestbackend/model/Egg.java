@@ -80,7 +80,7 @@ public class Egg extends Product {
 			if (!isEcloded) {
 				ageInDays++;
 			} else {
-				return;
+				break;
 			}
 		}
 	}

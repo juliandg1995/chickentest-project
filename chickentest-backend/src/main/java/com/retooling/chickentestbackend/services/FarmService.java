@@ -170,7 +170,7 @@ public class FarmService {
             List<Chicken> chickens = farm.getChickens();
             boolean added = chickens.add(newChicken); // Remove the specific egg object from list
             if (!added) {
-                throw new FailedOperationException("Edding chicken to farm " + farm.getId() + " list");
+                throw new FailedOperationException("Adding chicken to farm " + farm.getId() + " list");
             }
             farmRepository.save(farm); // Save the updated Farm object
         } else {
@@ -216,15 +216,20 @@ public class FarmService {
 	}
 	
 	@Transactional
-	public void manageEclodedEgg(Egg anEclodedEgg) {
+	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException {
+		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD al eliminar de lista
+		// FailedOperationException tiene que ser atrapada aquí con un try/catch, para no jorobar el forEach
 		Long farmOwnerId = anEclodedEgg.getfarmOwner().getId();
-		this.removeEggFromList(farmOwnerId, anEclodedEgg);
+		if (farmOwnerId.equals(null)) {
+			throw new FarmNotFoundException(new Long("1"));
+		}
 		double chickenPrice =  chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(1).getSellPrice();
-//		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
-//		this.addChickenToFarmList(newChicken, farmOwnerId);
+		this.removeEggFromList(farmOwnerId, anEclodedEgg);
+		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
+		this.addChickenToFarmList(newChicken, farmOwnerId);
 	}
 	
-	public void passDays(int numberOfDays) {
+	public void passDays(int numberOfDays) throws FailedOperationException {
 		// For Eggs
 		// Falta agregar las excepciones
 		eggService.passDays(numberOfDays);

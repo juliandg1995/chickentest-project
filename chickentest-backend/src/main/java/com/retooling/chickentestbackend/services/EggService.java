@@ -8,6 +8,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.retooling.chickentestbackend.exceptions.farm.FailedCrudOperationException;
+import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
+import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -100,13 +102,9 @@ public class EggService {
     	this.getAllEggs().forEach(egg -> {
     		egg.passDays(days);
     		if (egg.getIsEcloded()) {
-//    			try {
-    				this.deleteEgg(egg.getId());
-    				farmService.manageEclodedEgg(egg);
-    			// Cómo hago para lanzar una excepción desde aquí, y que llegue hasta el controller de "passDays()"?
-//    			} catch(FailedCrudOperationException e){
-//    				throw new FailedCrudOperationException("Could not remove egg");
-//    			}
+    			this.deleteEgg(egg.getId());
+    			// *** Falta que #manageEclodeEgg capture las excepciones que genera
+//    		    farmService.manageEclodedEgg(egg);
     		}
     	});
     }

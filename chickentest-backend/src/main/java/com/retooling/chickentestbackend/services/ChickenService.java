@@ -3,6 +3,7 @@ package com.retooling.chickentestbackend.services;
 import jakarta.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.*;
 import com.retooling.chickentestbackend.repository.ChickenRepository;
@@ -25,10 +26,10 @@ public class ChickenService {
 	
 	
 	@Transactional 
-    public Chicken createChicken(double sellPrice, int age, Long farmId) throws NoFarmFoundException {
+    public Chicken createChicken(double sellPrice, int age, Long farmId) throws FarmNotFoundException {
         // Retrieve the farm by ID
         Farm farm = farmService.getFarmById(farmId)
-                .orElseThrow(() -> new NoFarmFoundException("ID"));
+                .orElseThrow(() -> new FarmNotFoundException(farmId));
 
         // Create a new chicken and set the farm as the owner
         Chicken newChicken = new Chicken(sellPrice, age, farm);

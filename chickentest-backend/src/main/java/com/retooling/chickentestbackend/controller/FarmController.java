@@ -48,8 +48,8 @@ public class FarmController {
 	}
 	
 	@Transactional
-	@DeleteMapping(value = "/deleteFarm{farmId}")
-	public ResponseEntity<String> deleteFarm(@PathVariable Long farmId){
+	@DeleteMapping(value = "/deleteFarm/{farmId}")
+	public ResponseEntity<?> deleteFarm(@PathVariable Long farmId){
 		try {
 			farmService.deleteFarmById(farmId);
 			return new ResponseEntity<>("Farm with ID " + farmId + " deleted successfully", HttpStatus.OK);
@@ -92,7 +92,7 @@ public class FarmController {
     }
    
 	
-//	@PostMapping 
+//	@PostMapping(value = "/createFarm")
 //	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
 //		try {
 //			farmService.passDays(numberOfDays);
