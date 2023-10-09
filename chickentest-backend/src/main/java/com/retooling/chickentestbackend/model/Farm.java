@@ -33,9 +33,9 @@ public class Farm {
 	@Positive(message = "Money value should be positive")
 	private double money;
 	
-	private static int maxChickenStock = 500;
+	private static int maxChickenStock = 3;
 	
-	private static int maxEggStock = 50000;
+	private static int maxEggStock = 5;
 	
 	public Farm() {
 	}

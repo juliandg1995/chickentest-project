@@ -4,7 +4,6 @@ import jakarta.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
-import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.*;
 import com.retooling.chickentestbackend.repository.ChickenRepository;
 

@@ -15,7 +15,6 @@ import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientMoneyException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
-import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -72,7 +71,7 @@ public class FarmService {
         return farmRepository.findById(farmId);
     }	
     
-    public String getFarmSummaryById(Long farmId) throws NoFarmFoundException  {
+    public String getFarmSummaryById(Long farmId) throws FarmNotFoundException  {
     	
         // Searching Farm by Id
         Optional<Farm> farmOptional = farmRepository.findById(farmId);
@@ -97,7 +96,7 @@ public class FarmService {
             return farmSummary;
         } else {
             // If not found, throw exception with farm's missing information ("ID")
-            throw new NoFarmFoundException("ID");
+            throw new FarmNotFoundException(farmId);
         }
     }    
         
@@ -180,9 +179,9 @@ public class FarmService {
     
 	@Transactional
 	public boolean buyChickens(int amount, double price, Long farmId) 
-		   throws InsufficientMoneyException, NoChickensException, MaxStockException, NoFarmFoundException {
+		   throws InsufficientMoneyException, NoChickensException, MaxStockException, FarmNotFoundException {
 		
-        Farm farm = this.getFarmById(farmId).orElseThrow(() -> new NoFarmFoundException("ID"));
+        Farm farm = this.getFarmById(farmId).orElseThrow(() -> new FarmNotFoundException(farmId));
 	    
 		List<Chicken> chickens = farm.getChickens();
 		if (chickens.isEmpty()) {

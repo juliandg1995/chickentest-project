@@ -22,6 +22,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 
 import com.retooling.chickentestbackend.repository.*;
 import com.retooling.chickentestbackend.model.*;
@@ -39,7 +40,7 @@ public class FarmController {
 	
 	@Transactional
 	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
-	public ResponseEntity<Farm> createFarm(@RequestBody FarmRequestDTO farmRequest) {
+	public ResponseEntity<Farm> createFarm(@Valid @RequestBody FarmRequestDTO farmRequest) {
 		try {
 			return ResponseEntity.ok(farmService.createFarm(farmRequest.getName(), farmRequest.getMoney()));
 		} catch(Exception e){
@@ -86,8 +87,8 @@ public class FarmController {
         try {
         	String farmSummary = farmService.getFarmSummaryById(id);
             return ResponseEntity.ok(farmSummary);
-        } catch(NoFarmFoundException e) {
-        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + "ID");
+        } catch(FarmNotFoundException e) {
+        	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + id);
         }
     }
    

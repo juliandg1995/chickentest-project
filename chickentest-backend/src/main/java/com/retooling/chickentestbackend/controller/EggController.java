@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.EggRequestDTO;
-import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
+import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.services.EggService;
@@ -42,7 +42,7 @@ public class EggController {
     	try {
     		Egg newEgg = eggService.createEgg(eggRequest.getSellPrice(), eggRequest.getFarmId());
     		return ResponseEntity.ok(newEgg);
-    	} catch(NoFarmFoundException e) {
+    	} catch(FarmNotFoundException e) {
     		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     	}
     }	

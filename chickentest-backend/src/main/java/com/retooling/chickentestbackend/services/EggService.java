@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import com.retooling.chickentestbackend.exceptions.farm.FailedCrudOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
-import com.retooling.chickentestbackend.exceptions.farm.NoFarmFoundException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.EggRepository;
@@ -29,10 +28,10 @@ public class EggService {
 	
 	
 	@Transactional 
-    public Egg createEgg(double sellPrice, Long farmId) throws NoFarmFoundException {
+    public Egg createEgg(double sellPrice, Long farmId) throws FarmNotFoundException {
         // Retrieve the farm by ID
         Farm farm = farmService.getFarmById(farmId)
-                .orElseThrow(() -> new NoFarmFoundException("ID"));
+                .orElseThrow(() -> new FarmNotFoundException(farmId));
 
         // Create a new egg and set the farm as the owner
         Egg newEgg = new Egg(sellPrice, farm);
