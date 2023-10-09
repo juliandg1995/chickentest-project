@@ -3,6 +3,7 @@ package com.retooling.chickentestbackend.services;
 import jakarta.transaction.Transactional;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.model.*;
 import com.retooling.chickentestbackend.repository.ChickenRepository;
@@ -46,6 +47,21 @@ public class ChickenService {
       return chickenRepository.findByFarmOwner_Id(farmOwnerId);
   }
 
+ public String passDays(int days) {
+	 this.getAllChickens().forEach(chicken -> {
+ 		chicken.passDays(days);
+ 		if (chicken.getDaysToEggsCountdown() == 0) {
+ 			try {
+// 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
+     		    farmService.manageNewEggs();
+ 			} catch(FailedOperationException e) {
+ 				e = new FailedOperationException("New eggs creation");
+ 				System.err.println(e.getMessage());
+ 			}
+ 		}
+ 	});
+ 	return days + " passed by successfully";	 
+ }
 
 
 }

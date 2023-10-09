@@ -32,7 +32,7 @@ import com.retooling.chickentestbackend.exceptions.*;
 import com.retooling.chickentestbackend.exceptions.farm.*;
 
 @RestController
-@RequestMapping("/farm")
+@RequestMapping("/farms")
 public class FarmController {
 
 	@Autowired
@@ -93,17 +93,17 @@ public class FarmController {
     }
    
 	
-//	@PostMapping(value = "/createFarm")
-//	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
-//		try {
-//			farmService.passDays(numberOfDays);
-//			return ResponseEntity.ok(numberOfDays + " have passed successfully");
-//		} catch(InvalidParameterException e) {
-//			return ResponseEntity.badRequest().body(e.getMessage());
-//        } catch (Exception e) {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error occurred");
-//        }
-//	}   
+	@PostMapping(value = "/createFarm")
+	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
+		try {
+			farmService.passDays(numberOfDays);
+			return ResponseEntity.ok(numberOfDays + " have passed successfully");
+		} catch(InvalidParameterException e) {
+			return ResponseEntity.badRequest().body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("An internal error occurred");
+        }
+	}   
 
 //   @GetMapping("/{id}/money")
 //   public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {

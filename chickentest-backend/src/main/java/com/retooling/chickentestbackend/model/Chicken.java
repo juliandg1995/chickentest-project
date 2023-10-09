@@ -21,6 +21,8 @@ public class Chicken extends Product {
     
     private static int daysToPutEggs = 15;
     
+    private static int eggAmount;
+    
 	/** Constructors **/
     
 	public Chicken() {
@@ -63,7 +65,10 @@ public class Chicken extends Product {
 	public void passDays(int days) {
 		for (int i = 0; i < days; i++) {
 			this.daysToEggsCountdown++;
-		}		
+			if (daysToEggsCountdown == 0) {
+				break;
+			}
+		}
 	}
 	
 	public void hatchEggs(List<Egg> eggs) {

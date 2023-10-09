@@ -1,5 +1,6 @@
 package com.retooling.chickentestbackend.services;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
@@ -214,6 +215,7 @@ public class FarmService {
 	    return true;
 	}
 	
+	@SuppressWarnings("removal")
 	@Transactional
 	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD al eliminar de lista
@@ -228,11 +230,19 @@ public class FarmService {
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 	}
 	
-	public void passDays(int numberOfDays) throws FailedOperationException {
+	@Transactional
+	public void manageNewEggs() {
+		for int i
+	}
+	
+	public void passDays(int numberOfDays) throws FailedOperationException, InvalidParameterException {
 		// For Eggs
 		// Falta agregar las excepciones
+		if (numberOfDays < 1) {
+			throw new InvalidParameterException();
+		}
 		eggService.passDays(numberOfDays);
-//		chickenService.passDays(numberOfDays);	
+		chickenService.passDays(numberOfDays);	
 	}
 	
 	

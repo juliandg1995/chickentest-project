@@ -97,15 +97,21 @@ public class EggService {
     }
     
 
-    public void passDays(int days){
+    public String passDays(int days){
+    	// For Eggs
     	this.getAllEggs().forEach(egg -> {
     		egg.passDays(days);
     		if (egg.getIsEcloded()) {
-    			this.deleteEgg(egg.getId());
-    			// *** Falta que #manageEclodeEgg capture las excepciones que genera
-//    		    farmService.manageEclodedEgg(egg);
+    			try {
+//    				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
+        		    farmService.manageEclodedEgg(egg);
+    			} catch(FailedOperationException e) {
+    				e = new FailedOperationException("Egg deletion");
+    				System.err.println(e.getMessage());
+    			}
     		}
     	});
+    	return days + " passed by successfully";
     }
 
 }
