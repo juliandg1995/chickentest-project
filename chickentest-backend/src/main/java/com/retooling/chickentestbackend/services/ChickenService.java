@@ -53,7 +53,7 @@ public class ChickenService {
  		if (chicken.getDaysToEggsCountdown() == 0) {
  			try {
 // 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
-     		    farmService.manageNewEggs();
+     		    farmService.manageNewEggs(chicken.getfarmOwner().getId());
  			} catch(FailedOperationException e) {
  				e = new FailedOperationException("New eggs creation");
  				System.err.println(e.getMessage());

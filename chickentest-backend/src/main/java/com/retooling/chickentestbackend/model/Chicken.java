@@ -21,7 +21,7 @@ public class Chicken extends Product {
     
     private static int daysToPutEggs = 15;
     
-    private static int eggAmount;
+    private static int eggAmount = 10;
     
 	/** Constructors **/
     
@@ -90,6 +90,9 @@ public class Chicken extends Product {
 		this.setSellPrice(getSellPrice() * 0.7);
 	}
 
+	public static int getEggAmount() {
+		return eggAmount;
+	}
 	
     
 

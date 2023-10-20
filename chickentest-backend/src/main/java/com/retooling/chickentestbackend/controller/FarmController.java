@@ -93,7 +93,7 @@ public class FarmController {
     }
    
 	
-	@PostMapping(value = "/createFarm")
+	@PostMapping(value = "/passDays")
 	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
 		try {
 			farmService.passDays(numberOfDays);
