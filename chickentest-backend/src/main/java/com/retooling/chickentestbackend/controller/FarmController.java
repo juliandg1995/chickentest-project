@@ -91,10 +91,9 @@ public class FarmController {
         	return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + id);
         }
     }
-   
-	
-	@PostMapping(value = "/passDays")
-	public ResponseEntity<String> passDays(@RequestParam("numberOfDays") int numberOfDays){
+   	
+	@PostMapping(value = "/passDays/{numberOfDays}")
+	public ResponseEntity<String> passDays(@PathVariable int numberOfDays){
 		try {
 			farmService.passDays(numberOfDays);
 			return ResponseEntity.ok(numberOfDays + " have passed successfully");

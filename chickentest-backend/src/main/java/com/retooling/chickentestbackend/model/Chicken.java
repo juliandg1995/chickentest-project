@@ -19,9 +19,9 @@ public class Chicken extends Product {
     @Column
     private int ageInYears;
     
-    private static int daysToPutEggs = 15;
+    private static int daysToPutEggs = 5;
     
-    private static int eggAmount = 10;
+    private static int eggAmount = 1;
     
 	/** Constructors **/
     
@@ -63,8 +63,8 @@ public class Chicken extends Product {
 	
 	@Override
 	public void passDays(int days) {
-		for (int i = 0; i < days; i++) {
-			this.daysToEggsCountdown++;
+		for (int i = 0 ; i < days; i++) {
+			this.daysToEggsCountdown--;
 			if (daysToEggsCountdown == 0) {
 				break;
 			}

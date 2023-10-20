@@ -22,7 +22,9 @@ public class ChickentestBackendApplication {
 		Farm granja3 = new Farm("Granja de Julian", 15000);
 //		Egg huevo1 = new Egg(4812, Long.getLong("2"));
 		Egg huevo1 = new Egg(4812, granja1);
+		huevo1.hatch();
 		Egg huevo2 = new Egg(33321, granja1);
+		huevo2.hatch();
 		Egg huevo3 = new Egg(1234, granja2);
 		Egg huevo4 = new Egg(1150.50, granja3);
 //		Egg huevo2 = new Egg(12345, Long.getLong("2"));

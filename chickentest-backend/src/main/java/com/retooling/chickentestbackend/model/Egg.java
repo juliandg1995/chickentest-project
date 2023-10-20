@@ -12,7 +12,7 @@ import jakarta.transaction.Transactional;
 @Table(name = "eggs")
 public class Egg extends Product {
 
-	private static int daysToEclode = 10;
+	private static int daysToEclode = 4;
 
 	private int chickenCountdown;
 
@@ -46,6 +46,10 @@ public class Egg extends Product {
 	public void hatch() {
 		this.isHatched = true;
 	}
+	
+	public void unhatch() {
+		this.isHatched = false;
+	}
 
 	public boolean getIsHatched() {
 		return this.isHatched;
@@ -72,10 +76,9 @@ public class Egg extends Product {
 		}
 	}
 
-
 	@Override
 	public boolean isDiscountMaterial() {
-		if (isHatched || this.getAgeInDays() < 15) {
+		if (isHatched || this.getAgeInDays() < 5) {
 			return false;
 		}
 		return true;
