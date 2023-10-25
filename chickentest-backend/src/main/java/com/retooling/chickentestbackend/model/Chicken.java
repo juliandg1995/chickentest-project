@@ -17,7 +17,7 @@ public class Chicken extends Product {
     private int daysToEggsCountdown;
     
     @Column
-    private int ageInYears;
+    private int ageInDays;
     
     private static int daysToPutEggs = 5;
     
@@ -32,7 +32,7 @@ public class Chicken extends Product {
 	public Chicken(double sellPrice,  int age, Farm farmOwner) {
 		super(sellPrice, farmOwner);
 		this.daysToEggsCountdown = daysToPutEggs;
-		this.ageInYears = age;
+		this.ageInDays = age;
 	}
 	
 	/** Getters - Setters **/
@@ -54,11 +54,11 @@ public class Chicken extends Product {
 	}
 
 	public int getAge() {
-		return ageInYears;
+		return ageInDays;
 	}
 
 	public void setAge(int age) {
-		this.ageInYears = age;
+		this.ageInDays = age;
 	}
 	
 	@Override
@@ -71,6 +71,10 @@ public class Chicken extends Product {
 		}
 	}
 	
+	public void resetDaysToEggsCountdown() {
+		this.daysToEggsCountdown = daysToPutEggs;
+	}
+	
 	public void hatchEggs(List<Egg> eggs) {
 		for(Egg egg: eggs) {
 			egg.hatch();
@@ -79,7 +83,7 @@ public class Chicken extends Product {
 	
 	@Override
 	public boolean isDiscountMaterial() {
-		if (ageInYears < 4 || getDaysToPutEggs() <= 5) {
+		if (ageInDays < 10) {
 			return false;
 		}
 		return true;

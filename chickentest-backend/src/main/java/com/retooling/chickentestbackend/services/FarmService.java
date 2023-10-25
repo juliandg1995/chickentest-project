@@ -14,6 +14,7 @@ import com.retooling.chickentestbackend.exceptions.farm.EggNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientMoneyException;
+import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
@@ -251,14 +252,18 @@ public class FarmService {
 		}
 	}
 
-	public void passDays(int numberOfDays) throws FailedOperationException, InvalidParameterException {
+	public void passDays(int numberOfDays) throws FailedOperationException, InvalidParameterException, IterationException {
 		// For Eggs
-		// Falta agregar las excepciones
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
 		}
+//		eggService.passDays(numberOfDays);
+//		chickenService.passDays(numberOfDays);
+		
 		eggService.passDays(numberOfDays);
-		chickenService.passDays(numberOfDays);
+		List<Egg> newEggs = chickenService.passDays(numberOfDays);
+		newEggs.stream().forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+		
 	}
 
 //	@Transactional

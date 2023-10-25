@@ -1,5 +1,6 @@
 package com.retooling.chickentestbackend.controller;
 
+import java.security.InvalidParameterException;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.EggRequestDTO;
+import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
+import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.services.EggService;
@@ -45,20 +48,7 @@ public class EggController {
     	} catch(FarmNotFoundException e) {
     		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     	}
-    }	
-    
-    // Auxiliary class (check where to be placed)
-    class EggRequest {
-        private double sellPrice;
-
-        public double getSellPrice() {
-            return sellPrice;
-        }
-
-        public void setSellPrice(double sellPrice) {
-            this.sellPrice = sellPrice;
-        }
-    }    	
+    }		
 	
 	// To get ALL eggs
 	// Este funciona
@@ -105,7 +95,18 @@ public class EggController {
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     	}
     }	
-	
+    
+    @PostMapping("/hatchEggs")
+    public ResponseEntity<?> hatchEggs(@RequestBody List<Long> eggsId) throws NoEggsException, FailedOperationException {
+        try {
+            eggService.hatchEggs(eggsId);
+            return ResponseEntity.ok(eggsId);
+        } catch (NoEggsException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (FailedOperationException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 	
 
 }

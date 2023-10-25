@@ -10,6 +10,7 @@ import com.retooling.chickentestbackend.repository.ChickenRepository;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,22 +47,34 @@ public class ChickenService {
   public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
       return chickenRepository.findByFarmOwner_Id(farmOwnerId);
   }
+  
+	public List<Egg> passDays(int numberOfDays) {
 
- public String passDays(int days) {
-	 this.getAllChickens().forEach(chicken -> {
- 		chicken.passDays(days);
- 		if (chicken.getDaysToEggsCountdown() == 0) {
- 			try {
-// 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
-     		    farmService.manageNewEggs(chicken.getfarmOwner().getId());
- 			} catch(FailedOperationException e) {
- 				e = new FailedOperationException("New eggs creation");
- 				System.err.println(e.getMessage());
- 			}
- 		}
- 	});
- 	return days + " passed by successfully";	 
- }
+		List<Chicken> chickens = chickenRepository.findAll();
+		
+		return chickens.stream()
+				.peek(c -> c.passDays(numberOfDays))
+				.filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
+				.map(c -> { c.resetDaysToEggsCountdown(); return c;}) 
+				.flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner())))
+				.collect(Collectors.toList());
+	}  
+
+// public String passDays(int days) {
+//	 this.getAllChickens().forEach(chicken -> {
+// 		chicken.passDays(days);
+// 		if (chicken.getDaysToEggsCountdown() == 0) {
+// 			try {
+//// 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
+//     		    farmService.manageNewEggs(chicken.getfarmOwner().getId());
+// 			} catch(FailedOperationException e) {
+// 				e = new FailedOperationException("New eggs creation");
+// 				System.err.println(e.getMessage());
+// 			}
+// 		}
+// 	});
+// 	return days + " passed by successfully";	 
+// }
 
 
 }

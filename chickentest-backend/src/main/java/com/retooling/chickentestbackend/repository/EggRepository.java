@@ -25,4 +25,5 @@ public interface EggRepository extends CrudRepository<Egg, Long>{
 	 
 	 // Método para obtener todos los huevos no empollados de una granja por su ID
 	 List<Egg> findByFarmOwner_IdAndIsHatchedFalse(Long farmId);
+	 
 }
