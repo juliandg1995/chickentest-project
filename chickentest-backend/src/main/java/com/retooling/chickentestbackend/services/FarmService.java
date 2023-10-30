@@ -230,7 +230,7 @@ public class FarmService {
 		if (farmOwnerId.equals(null)) {
 			throw new FarmNotFoundException(new Long("1"));
 		}
-		double chickenPrice = chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(1).getSellPrice();
+		double chickenPrice = chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(0).getSellPrice();
 		this.removeEggFromList(farmOwnerId, anEclodedEgg);
 		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
