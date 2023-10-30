@@ -109,6 +109,8 @@ public class EggService {
                     egg.passDays(days);
                     if (egg.getIsEcloded()) {
                         farmService.manageEclodedEgg(egg);
+                    } else {
+                    	eggRepository.save(egg);
                     }
                 } catch (FarmNotFoundException | FailedOperationException e) {
                     shouldCancel.set(true);
