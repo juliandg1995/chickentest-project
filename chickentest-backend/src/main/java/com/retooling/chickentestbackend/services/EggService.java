@@ -107,9 +107,10 @@ public class EggService {
 
                 try {
                     egg.passDays(days);
-                    if (egg.getIsEcloded()) {
+                    if (egg.getIsHatched() && egg.getIsEcloded()) {
                         farmService.manageEclodedEgg(egg);
                     }
+                    eggRepository.save(egg);
                 } catch (FarmNotFoundException | FailedOperationException e) {
                     shouldCancel.set(true);
                     throw new RuntimeException(e.getMessage());
@@ -118,7 +119,7 @@ public class EggService {
         } catch (RuntimeException e) {
            throw new IterationException(e.getMessage());
         }
-        return days + " passed by successfully";
+        return days + " days passed by successfully";
     }	
 
 //	public String passDays(int days) {

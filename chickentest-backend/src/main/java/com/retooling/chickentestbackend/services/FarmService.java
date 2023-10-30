@@ -224,13 +224,11 @@ public class FarmService {
 	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
 		// al eliminar de lista
-		// FailedOperationException tiene que ser atrapada aquí con un try/catch, para
-		// no jorobar el forEach
 		Long farmOwnerId = anEclodedEgg.getfarmOwner().getId();
 		if (farmOwnerId.equals(null)) {
 			throw new FarmNotFoundException(new Long("1"));
 		}
-		double chickenPrice = chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(1).getSellPrice();
+		double chickenPrice = chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(0).getSellPrice();
 		this.removeEggFromList(farmOwnerId, anEclodedEgg);
 		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
