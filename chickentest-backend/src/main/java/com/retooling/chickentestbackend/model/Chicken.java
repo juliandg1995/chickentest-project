@@ -68,6 +68,7 @@ public class Chicken extends Product {
 			if (daysToEggsCountdown == 0) {
 				break;
 			}
+			ageInDays++;
 		}
 	}
 	

@@ -53,7 +53,7 @@ public class ChickenService {
 		List<Chicken> chickens = chickenRepository.findAll();
 		
 		return chickens.stream()
-				.peek(c -> c.passDays(numberOfDays))
+				.peek(c -> { c.passDays(numberOfDays); chickenRepository.save(c); })
 				.filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
 				.map(c -> { c.resetDaysToEggsCountdown(); return c;}) 
 				.flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner())))

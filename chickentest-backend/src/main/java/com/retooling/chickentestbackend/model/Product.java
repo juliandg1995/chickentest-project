@@ -19,7 +19,7 @@ public abstract class Product {
 	@Column(name = "sellPrice")
 	private double sellPrice;
 
-	@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "farmOwner")
 	@JsonBackReference
 	private Farm farmOwner;
