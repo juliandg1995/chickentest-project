@@ -3,6 +3,7 @@ package com.retooling.chickentestbackend.services;
 import java.util.List;
 import java.util.concurrent.atomic.*;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -139,25 +140,59 @@ public class EggService {
 
 	public void hatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
-		// !!!!! Traer del repo directamente filtrando por ID o buscar iterando la lista de IDs
+		boolean isEmpty = true;
 		
-//		List<Egg> foundEggs = eggRepository.findAllById(eggsId).; // BUSCAR COMO CASTEAR ITERABLE A LIST
+		Iterable<Egg> eggsIterable = eggRepository.findAllById(eggsId);
 		
-//		if (eggs.isEmpty()){
-//			throw new NoEggsException();
-//		}
+		for(Egg egg : eggsIterable) {
+			isEmpty = false;
+			break;
+		}
 		
-//			List<Egg> foundEggs = eggs.stream()
-//		    .filter(egg -> eggsId.contains(egg.getId())) // Filter eggs by ID
-//		    .collect(Collectors.toList());
-//			if (foundEggs.size() != eggsId.size()) {
-//
-//			}
-//			for(Egg e : foundEggs) {
-//				e.hatch();
-//			}
-//		    .forEach(egg -> egg.hatch()); // Hatch Eggs
+		if (!isEmpty) {
+			List<Egg> eggsList = StreamSupport
+					 .stream(eggsIterable.spliterator(), false)
+					 .map(e -> { e.hatch(); return e; })
+					 .collect(Collectors.toList());
+			
+			if (eggsList.size() != eggsId.size()) {
+				throw new FailedOperationException("Hatching eggs");
+			}
+			
+			eggRepository.saveAll(eggsList);
+			
+		} else {
+			throw new NoEggsException();
+		}
 		
+	}
+	
+	public void unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
+		
+		boolean isEmpty = true;
+		
+		Iterable<Egg> eggsIterable = eggRepository.findAllById(eggsId);
+		
+		for(Egg egg : eggsIterable) {
+			isEmpty = false;
+			break;
+		}
+		
+		if (!isEmpty) {
+			List<Egg> eggsList = StreamSupport
+					 .stream(eggsIterable.spliterator(), false)
+					 .map(e -> { e.unhatch(); return e; })
+					 .collect(Collectors.toList());
+			
+			if (eggsList.size() != eggsId.size()) {
+				throw new FailedOperationException("Unhatching eggs");
+			}
+			
+			eggRepository.saveAll(eggsList);
+			
+		} else {
+			throw new NoEggsException();
+		}
 	}
 	
 

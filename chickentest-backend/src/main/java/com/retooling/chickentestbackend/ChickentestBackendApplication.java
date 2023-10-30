@@ -22,9 +22,9 @@ public class ChickentestBackendApplication {
 		Farm granja3 = new Farm("Granja de Julian", 15000);
 //		Egg huevo1 = new Egg(4812, Long.getLong("2"));
 		Egg huevo1 = new Egg(4812, granja1);
-		huevo1.hatch();
+//		huevo1.hatch();
 		Egg huevo2 = new Egg(33321, granja1);
-		huevo2.hatch();
+//		huevo2.hatch();
 		Egg huevo3 = new Egg(1234, granja2);
 		Egg huevo4 = new Egg(1150.50, granja3);
 //		Egg huevo2 = new Egg(12345, Long.getLong("2"));
@@ -32,9 +32,9 @@ public class ChickentestBackendApplication {
 //		Egg huevo4 = new Egg(76554, null);
 
 		Chicken pollo1 = new Chicken(123545, 2, granja1);
-		Chicken pollo2 = new Chicken(50.29, 1, granja1);
-		Chicken pollo3 = new Chicken(103.70, 4, granja2);
-		Chicken pollo4 = new Chicken(123545, 6, granja3);
+//		Chicken pollo2 = new Chicken(50.29, 1, granja1);
+//		Chicken pollo3 = new Chicken(103.70, 4, granja2);
+//		Chicken pollo4 = new Chicken(123545, 6, granja3);
 //		Chicken pollo1 = new Chicken(123.55, 6, Long.getLong("1") );
 //		Chicken pollo2 = new Chicken(148.29, 5, Long.getLong("1") );
 //		Chicken pollo3 = new Chicken(322, 2, Long.getLong("2") );
@@ -52,9 +52,9 @@ public class ChickentestBackendApplication {
 
 		ChickenRepository chickenRepo = context.getBean(ChickenRepository.class);
 		chickenRepo.save(pollo1);
-		chickenRepo.save(pollo2);
-		chickenRepo.save(pollo3);
-		chickenRepo.save(pollo4);
+//		chickenRepo.save(pollo2);
+//		chickenRepo.save(pollo3);
+//		chickenRepo.save(pollo4);
 
 	}
 
