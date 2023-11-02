@@ -64,11 +64,11 @@ public class Chicken extends Product {
 	@Override
 	public void passDays(int days) {
 		for (int i = 0 ; i < days; i++) {
+			ageInDays++;
 			this.daysToEggsCountdown--;
 			if (daysToEggsCountdown == 0) {
 				break;
 			}
-			ageInDays++;
 		}
 	}
 	

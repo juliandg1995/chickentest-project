@@ -31,7 +31,7 @@ public class ChickentestBackendApplication {
 //		Egg huevo3 = new Egg(23456, Long.getLong("1"));		
 //		Egg huevo4 = new Egg(76554, null);
 
-		Chicken pollo1 = new Chicken(123545, 2, granja1);
+		Chicken pollo1 = new Chicken(123545, 0, granja1);
 //		Chicken pollo2 = new Chicken(50.29, 1, granja1);
 //		Chicken pollo3 = new Chicken(103.70, 4, granja2);
 //		Chicken pollo4 = new Chicken(123545, 6, granja3);

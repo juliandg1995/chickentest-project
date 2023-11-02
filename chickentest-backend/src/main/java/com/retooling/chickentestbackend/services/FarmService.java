@@ -21,6 +21,7 @@ import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
+import com.retooling.chickentestbackend.repository.EggRepository;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -126,6 +127,8 @@ public class FarmService {
 				throw new EggNotFoundException(eggToRemove.getId());
 			}
 			farmRepository.save(farm); // Save the updated Farm object
+			eggService.deleteEgg(eggToRemove.getId());
+			
 		} else {
 			throw new FarmNotFoundException(farmId);
 		}
