@@ -88,13 +88,15 @@ public class Farm {
 		this.eggs = eggs;
 	}
 	
-	public void passADay(){
-		
+	public void spendMoney(double amount) {
+		money -= amount;
 	}
 	
-	public void eggToChicken(Egg anEgg) {
-		
+	public void earnMoney(double amount) {
+		money += amount;
 	}
+	
+	
 	
 	
 	

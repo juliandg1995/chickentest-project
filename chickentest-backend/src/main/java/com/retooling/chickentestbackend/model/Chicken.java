@@ -23,6 +23,8 @@ public class Chicken extends Product {
     
     private static int eggAmount = 1;
     
+    private static double defaultSellPrice = 5.00;
+    
 	/** Constructors **/
     
 	public Chicken() {
@@ -56,6 +58,14 @@ public class Chicken extends Product {
 	public int getAge() {
 		return ageInDays;
 	}
+	
+	public static int getEggAmount() {
+		return eggAmount;
+	}
+	
+	public static double getDefaultSellPrice(){
+		return defaultSellPrice;
+	}	
 
 	public void setAge(int age) {
 		this.ageInDays = age;
@@ -94,11 +104,6 @@ public class Chicken extends Product {
 	public void setDiscount() {
 		this.setSellPrice(getSellPrice() * 0.7);
 	}
-
-	public static int getEggAmount() {
-		return eggAmount;
-	}
-	
     
 
 }

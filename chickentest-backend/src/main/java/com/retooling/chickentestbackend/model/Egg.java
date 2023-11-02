@@ -22,6 +22,8 @@ public class Egg extends Product {
 
 	@Column(name = "ageInDays")
 	private int ageInDays;
+	
+	private static double defaultSellPrice = 1.00;
 
 	public Egg() {
 		super();
@@ -58,6 +60,10 @@ public class Egg extends Product {
 	public boolean getIsEcloded() {
 		return isEcloded;
 	}
+	
+	public static double getDefaultSellPrice(){
+		return defaultSellPrice;
+	}
 
 	@Override
 	public void passDays(int days) {
@@ -92,5 +98,6 @@ public class Egg extends Product {
 	private void eclode() {
 		isEcloded = true;
 	}
+	
 
 }

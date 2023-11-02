@@ -35,7 +35,7 @@ public abstract class Product {
 		this.farmOwner = farmOwner;
 	}
 
-	/****** Getters / Setters ******/
+	/****** Getters / Setters ******/	
 
 	public Long getId() {
 		return id;
