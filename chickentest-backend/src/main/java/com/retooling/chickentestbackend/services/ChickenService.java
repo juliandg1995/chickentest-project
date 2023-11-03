@@ -1,20 +1,19 @@
 package com.retooling.chickentestbackend.services;
 
-import jakarta.transaction.Transactional;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
-import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
-import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
-import com.retooling.chickentestbackend.model.*;
-import com.retooling.chickentestbackend.repository.ChickenRepository;
-
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
+import com.retooling.chickentestbackend.model.Chicken;
+import com.retooling.chickentestbackend.model.Egg;
+import com.retooling.chickentestbackend.model.Farm;
+import com.retooling.chickentestbackend.repository.ChickenRepository;
+
+import jakarta.transaction.Transactional;
 
 @Service
 public class ChickenService {

@@ -4,11 +4,9 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.retooling.chickentestbackend.exceptions.farm.ChickenNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.EggNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
@@ -23,7 +21,6 @@ import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
-import com.retooling.chickentestbackend.repository.EggRepository;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 
 import jakarta.persistence.EntityNotFoundException;
@@ -73,7 +70,6 @@ public class FarmService {
 	}
 
 	// Returns a farm, searching by ID
-	@SuppressWarnings("removal")
 	public Optional<Farm> getFarmById(Long farmId) throws FarmNotFoundException {
 		Optional<Farm> farmOptional = farmRepository.findById(farmId);
 		if (!farmOptional.isPresent()) {
@@ -200,7 +196,6 @@ public class FarmService {
 	}
 
 
-	@SuppressWarnings("removal")
 	@Transactional
 	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
@@ -278,9 +273,8 @@ public class FarmService {
 	}
 	
 	@Transactional
-	public void buyNewEggs(int amount, double price, Long forFarmId) 
+	public String buyNewEggs(int amount, double price, Long forFarmId) 
 		   throws InsufficientMoneyException, 
-		   		  NoEggsException, 
 		   		  MaxStockException, 
 		   		  FarmNotFoundException {
 		
@@ -303,14 +297,15 @@ public class FarmService {
 	    this.addNewEggsForFarm(farm, amount);
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
+	    
+	    return amount + " eggs have been bought for " + farm.getName();
 	
 	}
 	
 	
 	@Transactional
-	public void buyNewChickens(int amount, double price, Long forFarmId) 
+	public String buyNewChickens(int amount, double price, Long forFarmId) 
 		   throws InsufficientMoneyException, 
-		   		  NoEggsException, 
 		   		  MaxStockException, 
 		   		  FarmNotFoundException {
 		
@@ -334,10 +329,11 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 
+	    return amount + " chickens have been bought for " + farm.getName();
 	}
 	
 	@Transactional
-	public void sellEggs(int amount, Long fromFarmId, double paymentAmount) 
+	public String sellEggs(int amount, double paymentAmount, Long fromFarmId) 
 		   throws InsufficientStockException, 
 		   		  NoEggsException, 
 		   		  InsufficientPaymentException, 
@@ -363,13 +359,15 @@ public class FarmService {
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(paymentAmount); 
 	    farmRepository.save(farm);
+	    
+	    return amount + " eggs have been sold by " + farm.getName();
 	
 	}	
 	
 	@Transactional
-	public void sellChickens(int amount, Long fromFarmId, double paymentAmount) 
+	public String sellChickens(int amount, double paymentAmount, Long fromFarmId) 
 		   throws InsufficientStockException, 
-		   		  NoEggsException, 
+		   		  NoChickensException, 
 		   		  InsufficientPaymentException, 
 		   		  FarmNotFoundException {
 		
@@ -393,6 +391,8 @@ public class FarmService {
 	    chickens.removeAll(soldChickens);
 	    farm.earnMoney(paymentAmount); 
 	    farmRepository.save(farm);
+	    
+	    return amount + " chickens have been sold by " + farm.getName();
 	
 	}		
 	
