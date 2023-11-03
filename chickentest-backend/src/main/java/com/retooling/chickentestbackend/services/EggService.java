@@ -1,16 +1,13 @@
 package com.retooling.chickentestbackend.services;
 
 import java.util.List;
-import java.util.concurrent.atomic.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import org.hibernate.validator.internal.util.stereotypes.Lazy;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-
-import com.retooling.chickentestbackend.exceptions.farm.FailedCrudOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
@@ -109,6 +106,8 @@ public class EggService {
                     egg.passDays(days);
                     if (egg.getIsHatched() && egg.getIsEcloded()) {
                         farmService.manageEclodedEgg(egg);
+                    } else {
+                    	eggRepository.save(egg);
                     }
                     eggRepository.save(egg);
                 } catch (FarmNotFoundException | FailedOperationException e) {
@@ -139,6 +138,7 @@ public class EggService {
 //		return days + " passed by successfully";
 //	}
 
+	@SuppressWarnings("unused")
 	public void hatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
 		boolean isEmpty = true;
@@ -168,6 +168,7 @@ public class EggService {
 		
 	}
 	
+	@SuppressWarnings("unused")
 	public void unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
 		boolean isEmpty = true;

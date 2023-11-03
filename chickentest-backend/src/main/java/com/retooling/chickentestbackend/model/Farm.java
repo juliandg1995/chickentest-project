@@ -35,7 +35,7 @@ public class Farm {
 	
 	private static int maxChickenStock = 3;
 	
-	private static int maxEggStock = 5;
+	private static int maxEggStock = 3;
 	
 	public Farm() {
 	}
@@ -88,13 +88,15 @@ public class Farm {
 		this.eggs = eggs;
 	}
 	
-	public void passADay(){
-		
+	public void spendMoney(double amount) {
+		money -= amount;
 	}
 	
-	public void eggToChicken(Egg anEgg) {
-		
+	public void earnMoney(double amount) {
+		money += amount;
 	}
+	
+	
 	
 	
 	

@@ -1,6 +1,5 @@
 package com.retooling.chickentestbackend.controller;
 
-import java.security.InvalidParameterException;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.EggRequestDTO;
@@ -21,7 +19,6 @@ import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
-import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.services.EggService;
 import com.retooling.chickentestbackend.services.FarmService;
 
@@ -35,6 +32,7 @@ public class EggController {
 	@Autowired
 	private EggService eggService;
 
+	@SuppressWarnings("unused")
 	@Autowired
 	private FarmService farmService;
 

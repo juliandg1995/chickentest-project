@@ -1,12 +1,8 @@
 package com.retooling.chickentestbackend.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "eggs")
@@ -22,6 +18,8 @@ public class Egg extends Product {
 
 	@Column(name = "ageInDays")
 	private int ageInDays;
+	
+	private static double defaultSellPrice = 1.00;
 
 	public Egg() {
 		super();
@@ -58,6 +56,10 @@ public class Egg extends Product {
 	public boolean getIsEcloded() {
 		return isEcloded;
 	}
+	
+	public static double getDefaultSellPrice(){
+		return defaultSellPrice;
+	}
 
 	@Override
 	public void passDays(int days) {
@@ -92,5 +94,6 @@ public class Egg extends Product {
 	private void eclode() {
 		isEcloded = true;
 	}
+	
 
 }
