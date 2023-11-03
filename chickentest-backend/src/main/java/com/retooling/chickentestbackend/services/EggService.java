@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
+import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -90,11 +91,11 @@ public class EggService {
 		return eggs.stream().filter(egg -> egg.getIsHatched()).collect(Collectors.toList());
 	}
 	
-    public String passDays(int days) throws IterationException {
+    public String passDays(int days) throws IterationException, MaxStockException {
 
         try {
             AtomicBoolean shouldCancel = new AtomicBoolean(false);
-
+           
             // For Eggs
             this.getAllEggs().forEach(egg -> {
 
@@ -105,11 +106,11 @@ public class EggService {
                 try {
                     egg.passDays(days);
                     if (egg.getIsEcloded()) {
-                        farmService.manageEclodedEgg(egg);
+                    	farmService.manageEclodedEgg(egg);
                     } else {
                     	eggRepository.save(egg);
                     }
-                } catch (FarmNotFoundException | FailedOperationException e) {
+                } catch (FarmNotFoundException | FailedOperationException | MaxStockException e) {
                     shouldCancel.set(true);
                     throw new RuntimeException(e.getMessage());
                 }
