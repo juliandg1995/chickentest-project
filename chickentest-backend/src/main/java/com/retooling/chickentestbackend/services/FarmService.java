@@ -280,9 +280,9 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(forFarmId).orElseThrow(() -> new FarmNotFoundException(forFarmId));
 		
-		int stock = eggService.getAllEggsByFarmOwnerId(forFarmId).size();
+		int currentStock = eggService.getAllEggsByFarmOwnerId(forFarmId).size();
 		
-		if ( stock < stock + amount ) {
+		if ( Farm.getMaxStockOfEggs() < currentStock + amount ) {
 			throw new MaxStockException("egg");
 		}
 		
@@ -298,7 +298,7 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 	    
-	    return amount + " eggs have been bought for " + farm.getName();
+	    return amount + " eggs have been bought by " + farm.getName();
 	
 	}
 	
@@ -311,9 +311,9 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(forFarmId).orElseThrow(() -> new FarmNotFoundException(forFarmId));
 		
-		int stock = chickenService.getAllChickensByFarmOwnerId(forFarmId).size();
+		int currentStock = chickenService.getAllChickensByFarmOwnerId(forFarmId).size();
 		
-		if ( stock < stock + amount ) {
+		if ( Farm.getMaxStockOfChickens() < currentStock + amount ) {
 			throw new MaxStockException("chicken");
 		}
 		
@@ -329,7 +329,7 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 
-	    return amount + " chickens have been bought for " + farm.getName();
+	    return amount + " chickens have been bought by " + farm.getName();
 	}
 	
 	@Transactional
@@ -342,9 +342,9 @@ public class FarmService {
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
 		List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(fromFarmId);
-		int stock = eggs.size();
+		int currentStock = eggs.size();
 		
-		if ( stock <  amount ) {
+		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
 		
@@ -374,9 +374,9 @@ public class FarmService {
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
 		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
-		int stock = chickens.size();
+		int currentStock = chickens.size();
 		
-		if ( stock <  amount ) {
+		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
 		

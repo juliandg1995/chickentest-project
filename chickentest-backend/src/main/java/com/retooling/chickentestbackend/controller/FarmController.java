@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.FarmRequestDTO;
@@ -114,8 +115,11 @@ public class FarmController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@PostMapping(value = "/buyEggs/eggAmount={eggAmount}/eggPrice={eggPrice}/farmId={farmId}")
-	public ResponseEntity buyEggs(@PathVariable int eggAmount, double eggPrice, Long farmId) {
+	// Ejemplo request: localhost:8080/farms/buyNewEggs?eggAmount=2&eggPrice=10&farmId=1
+	@PostMapping(value = "/buyNewEggs")
+	public ResponseEntity buyEggs(@RequestParam int eggAmount, 
+								  @RequestParam double eggPrice, 
+								  @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewEggs(eggAmount, eggPrice, farmId));
 		} catch (InsufficientMoneyException | MaxStockException e) {
@@ -128,8 +132,10 @@ public class FarmController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@PostMapping(value = "/buyChickens/chickenAmount={chickenAmount}/chickenPrice={chickenPrice}/farmId={farmId}")
-	public ResponseEntity buyChickens(@PathVariable int chickenAmount, double chickenPrice, Long farmId) {
+	@PostMapping(value = "/buyNewChickens")
+	public ResponseEntity buyChickens(@RequestParam int chickenAmount, 
+									  @RequestParam double chickenPrice, 
+									  @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewChickens(chickenAmount, chickenPrice, farmId));
 		} catch (MaxStockException  |  InsufficientMoneyException e) {
@@ -142,8 +148,10 @@ public class FarmController {
 	}
 	
 	@SuppressWarnings("rawtypes")
-	@PostMapping(value = "/sellEggs/eggAmount={eggAmount}/paymentAmount={payment}/farmId={farmId}")
-	public ResponseEntity sellEggs(@PathVariable int eggAmount, double payment, Long farmId) {
+	@PostMapping(value = "/sellEggs")
+	public ResponseEntity sellEggs(@RequestParam int eggAmount, 
+								   @RequestParam double payment, 
+								   @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellEggs(eggAmount, payment, farmId));
 		} catch (InsufficientPaymentException e) {
@@ -156,8 +164,10 @@ public class FarmController {
 	}
 
 	@SuppressWarnings("rawtypes")
-	@PostMapping(value = "/sellChickens/chickenAmount={amount}/paymentAmount={payment}/farmId={farmId}")
-	public ResponseEntity sellChickens(@PathVariable int amount, double payment, Long farmId) {
+	@PostMapping(value = "/sellChickens")
+	public ResponseEntity sellChickens(@RequestParam int amount, 
+									   @RequestParam double payment, 
+									   @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellChickens(amount, payment, farmId));
 		} catch (InsufficientPaymentException e) {

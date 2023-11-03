@@ -35,7 +35,7 @@ public class Farm {
 	
 	private static int maxChickenStock = 3;
 	
-	private static int maxEggStock = 5;
+	private static int maxEggStock = 3;
 	
 	public Farm() {
 	}
