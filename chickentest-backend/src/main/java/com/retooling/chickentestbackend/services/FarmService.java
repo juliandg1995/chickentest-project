@@ -348,16 +348,16 @@ public class FarmService {
 			throw new InsufficientStockException();
 		}
 		
-		double total_cost =  eggs.get(0).getSellPrice() * amount;
+		double totalCost =  eggs.get(0).getSellPrice() * amount;
 		
-		if (paymentAmount < total_cost) {
+		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
 		}
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
 	    eggs.removeAll(soldEggs);
-	    farm.earnMoney(paymentAmount); 
+	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
 	    return amount + " eggs have been sold by " + farm.getName();
@@ -380,16 +380,16 @@ public class FarmService {
 			throw new InsufficientStockException();
 		}
 		
-		double total_cost =  chickens.get(0).getSellPrice() * amount;
+		double totalCost =  chickens.get(0).getSellPrice() * amount;
 		
-		if (paymentAmount < total_cost) {
+		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
 		}
 		
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
 	    chickens.removeAll(soldChickens);
-	    farm.earnMoney(paymentAmount); 
+	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
 	    return amount + " chickens have been sold by " + farm.getName();
