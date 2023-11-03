@@ -233,8 +233,6 @@ public class FarmService {
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
 		}
-//		eggService.passDays(numberOfDays);
-//		chickenService.passDays(numberOfDays);
 		
 		eggService.passDays(numberOfDays);
 		List<Egg> newEggs = chickenService.passDays(numberOfDays);
@@ -341,14 +339,16 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
-		List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(fromFarmId);
+//		List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(fromFarmId);
+		List<Egg> eggs = farm.getEggs();
 		int currentStock = eggs.size();
 		
 		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
 		
-		double totalCost =  eggs.get(0).getSellPrice() * amount;
+//		double totalCost =  eggs.get(0).getSellPrice() * amount;
+		double totalCost = eggs.stream().findFirst().get().getSellPrice() * amount;
 		
 		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
@@ -356,7 +356,8 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
-	    eggs.removeAll(soldEggs);
+	    soldEggs.forEach(e -> farm.getEggs().remove(e));
+//		eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
@@ -373,14 +374,14 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
-		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
+//		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
+		List<Chicken> chickens = farm.getChickens();
 		int currentStock = chickens.size();
 		
 		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
-		
-		double totalCost =  chickens.get(0).getSellPrice() * amount;
+		double totalCost = chickens.stream().findFirst().get().getSellPrice() * amount;
 		
 		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
@@ -388,7 +389,8 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
-	    chickens.removeAll(soldChickens);
+//	    chickens.removeAll(soldChickens);
+	    soldChickens.forEach(e -> farm.getChickens().remove(e));
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
