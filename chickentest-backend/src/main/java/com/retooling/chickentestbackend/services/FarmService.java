@@ -391,9 +391,9 @@ public class FarmService {
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
 //	    chickens.removeAll(soldChickens);
+//		soldChickens.forEach(e -> farm.getChickens().remove(e));
 		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
 		chickens.removeAll(soldChickens);
-	    soldChickens.forEach(e -> farm.getChickens().remove(e));
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
