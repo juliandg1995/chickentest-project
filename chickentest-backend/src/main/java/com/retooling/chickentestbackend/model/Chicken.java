@@ -91,19 +91,6 @@ public class Chicken extends Product {
 			egg.hatch();
 		}
 	}
-	
-	@Override
-	public boolean isDiscountMaterial() {
-		if (ageInDays < 10) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public void setDiscount() {
-		this.setSellPrice(getSellPrice() * 0.7);
-	}
     
 
 }

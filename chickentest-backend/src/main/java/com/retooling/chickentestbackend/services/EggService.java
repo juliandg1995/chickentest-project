@@ -10,8 +10,11 @@ import org.springframework.stereotype.Service;
 
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
+import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentException;
+import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -91,6 +94,10 @@ public class EggService {
 		return eggs.stream().filter(egg -> egg.getIsHatched()).collect(Collectors.toList());
 	}
 	
+	public double getEggDiscount(double price) {
+		return price * 0.5;
+	}
+	
     public String passDays(int days) throws IterationException, MaxStockException {
 
         try {
@@ -110,7 +117,7 @@ public class EggService {
                     } else {
                     	eggRepository.save(egg);
                     }
-                } catch (FarmNotFoundException | FailedOperationException | MaxStockException e) {
+                } catch (FarmNotFoundException | FailedOperationException | MaxStockException | InsufficientStockException | NoChickensException | InsufficientPaymentException e) {
                     shouldCancel.set(true);
                     throw new RuntimeException(e.getMessage());
                 }
