@@ -356,8 +356,9 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
-	    soldEggs.forEach(e -> farm.getEggs().remove(e));
-//		eggs.removeAll(soldEggs);
+//	    soldEggs.forEach(e -> farm.getEggs().remove(e));
+	    soldEggs.stream().forEach(e-> eggService.deleteEgg(e.getId()));
+	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
@@ -390,6 +391,8 @@ public class FarmService {
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
 //	    chickens.removeAll(soldChickens);
+		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
+		chickens.removeAll(soldChickens);
 	    soldChickens.forEach(e -> farm.getChickens().remove(e));
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);

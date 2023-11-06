@@ -17,47 +17,51 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class ChickenService {
-	
+
 	@Autowired
 	private ChickenRepository chickenRepository;
-	
+
 	@Autowired
-	private FarmService farmService;	
-	
-	
-	@Transactional 
-    public Chicken createChicken(double sellPrice, int age, Long farmId) throws FarmNotFoundException {
-        // Retrieve the farm by ID
-        Farm farm = farmService.getFarmById(farmId)
-                .orElseThrow(() -> new FarmNotFoundException(farmId));
+	private FarmService farmService;
 
-        // Create a new chicken and set the farm as the owner
-        Chicken newChicken = new Chicken(sellPrice, age, farm);
+	@Transactional
+	public Chicken createChicken(double sellPrice, int age, Long farmId) throws FarmNotFoundException {
+		// Retrieve the farm by ID
+		Farm farm = farmService.getFarmById(farmId).orElseThrow(() -> new FarmNotFoundException(farmId));
 
-        // Save the egg to the database
-        return chickenRepository.save(newChicken);
-    }	
-	
-  // To get all chickens
-  public List<Chicken> getAllChickens() {
-  	return chickenRepository.findAll();
-  }
-	
-  public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
-      return chickenRepository.findByFarmOwner_Id(farmOwnerId);
-  }
-  
+		// Create a new chicken and set the farm as the owner
+		Chicken newChicken = new Chicken(sellPrice, age, farm);
+
+		// Save the egg to the database
+		return chickenRepository.save(newChicken);
+	}
+
+	// Delete the egg from the database
+	public void deleteChicken(Long chickenId) {
+		chickenRepository.deleteById(chickenId);
+	}
+
+	// To get all chickens
+	public List<Chicken> getAllChickens() {
+		return chickenRepository.findAll();
+	}
+
+	public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
+		return chickenRepository.findByFarmOwner_Id(farmOwnerId);
+	}
+
 	public List<Egg> passDays(int numberOfDays) {
 
 		List<Chicken> chickens = chickenRepository.findAll();
-		
-		return chickens.stream()
-				.peek(c -> { c.passDays(numberOfDays); chickenRepository.save(c); })
-				.filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
-				.map(c -> { c.resetDaysToEggsCountdown(); return c;}) 
-				.flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner())))
-				.collect(Collectors.toList());
-	}  
+
+		return chickens.stream().peek(c -> {
+			c.passDays(numberOfDays);
+			chickenRepository.save(c);
+		}).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0).map(c -> {
+			c.resetDaysToEggsCountdown();
+			return c;
+		}).flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+	}
 
 // public String passDays(int days) {
 //	 this.getAllChickens().forEach(chicken -> {
@@ -74,6 +78,5 @@ public class ChickenService {
 // 	});
 // 	return days + " passed by successfully";	 
 // }
-
 
 }
