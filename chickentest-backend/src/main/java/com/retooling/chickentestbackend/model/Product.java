@@ -67,8 +67,5 @@ public abstract class Product {
 
 	public abstract void passDays(int days);
 
-	public abstract boolean isDiscountMaterial();
-
-	public abstract void setDiscount();
 
 }

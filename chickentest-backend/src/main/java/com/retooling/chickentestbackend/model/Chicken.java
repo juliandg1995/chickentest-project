@@ -1,10 +1,10 @@
 package com.retooling.chickentestbackend.model;
 
-import jakarta.persistence.*;
+import java.util.List;
 
-import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "chickens")
