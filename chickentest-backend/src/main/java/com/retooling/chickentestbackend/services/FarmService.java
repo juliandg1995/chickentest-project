@@ -224,7 +224,13 @@ public class FarmService {
 			this.sellChickens(1, chickenPrice, farmOwnerId);
 		}
 		
-		this.removeEggFromList(farmOwnerId, anEclodedEgg);
+		List<Egg> eggs = farmOwner.getEggs();
+		if (eggs.contains(anEclodedEgg)) {
+			eggs.remove(anEclodedEgg);
+			eggService.deleteEgg(anEclodedEgg.getId());
+		}
+		
+//		this.removeEggFromList(farmOwnerId, anEclodedEgg);  -> Decidir si mantener el método, refactorizarlo o eliminarlo
 		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 		
@@ -264,8 +270,9 @@ public class FarmService {
 			throw new InvalidParameterException();
 		}
 		
+		List<Chicken> actualChickens = chickenService.getAllChickens();
 		eggService.passDays(numberOfDays);
-		List<Egg> newEggs = chickenService.passDays(numberOfDays);
+		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 		newEggs.stream().forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 		
 	}
@@ -369,7 +376,7 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
-		List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(fromFarmId);
+		List<Egg> eggs = farm.getEggs();
 		int currentStock = eggs.size();
 		
 		if ( currentStock <  amount ) {
@@ -384,6 +391,7 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
+		soldEggs.stream().forEach(e-> eggService.deleteEgg(e.getId()));
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
@@ -401,7 +409,7 @@ public class FarmService {
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
-		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
+		List<Chicken> chickens = farm.getChickens();
 		int currentStock = chickens.size();
 		
 		if ( currentStock <  amount ) {
@@ -416,6 +424,7 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
+		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
 	    chickens.removeAll(soldChickens);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);

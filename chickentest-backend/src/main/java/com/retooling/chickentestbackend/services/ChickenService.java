@@ -35,6 +35,11 @@ public class ChickenService {
 		// Save the egg to the database
 		return chickenRepository.save(newChicken);
 	}
+	
+	@Transactional
+	public void deleteChicken(Long chickenId) {
+		chickenRepository.deleteById(chickenId);
+	}
 
 	// To get all chickens
 	public List<Chicken> getAllChickens() {
@@ -49,9 +54,7 @@ public class ChickenService {
 		return sellPrice * 0.7;
 	}
 
-	public List<Egg> passDays(int numberOfDays) {
-
-		List<Chicken> chickens = chickenRepository.findAll();
+	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
 
 		return chickens.stream().peek(c -> {
 			c.passDays(numberOfDays);

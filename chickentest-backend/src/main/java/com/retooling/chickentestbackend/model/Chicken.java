@@ -19,7 +19,7 @@ public class Chicken extends Product {
     @Column
     private int ageInDays;
     
-    private static int daysToPutEggs = 5;
+    private static int daysToPutEggs = 10;
     
     private static int eggAmount = 1;
     
