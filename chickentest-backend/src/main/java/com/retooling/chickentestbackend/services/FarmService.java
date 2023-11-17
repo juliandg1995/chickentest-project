@@ -195,7 +195,6 @@ public class FarmService {
 		}
 	}
 
-
 	@Transactional
 	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException, 
 														  MaxStockException, InsufficientStockException, 
@@ -203,15 +202,16 @@ public class FarmService {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
 		// al eliminar de lista
 
-		double chickenPrice;
 		Farm farmOwner = anEclodedEgg.getfarmOwner();
 		if (farmOwner.equals(null)) {
 			throw new FarmNotFoundException(0L);
 		}
 		Long farmOwnerId = farmOwner.getId();
+		
 		// Stock control
 		List<Chicken> chickens = farmOwner.getChickens();
 		
+		double chickenPrice;
 		if (!chickens.isEmpty()) {
 			chickenPrice = chickens.get(0).getSellPrice();
 		} else {
@@ -220,7 +220,6 @@ public class FarmService {
 		
 		// If max stock is reached, a chicken will be sold at discount
 		if (chickens.size() == Farm.getMaxStockOfChickens()) {
-//			throw new MaxStockException("Egg");
 			this.sellChickens(1, chickenPrice, farmOwnerId);
 		}
 		
@@ -273,7 +272,10 @@ public class FarmService {
 		List<Chicken> actualChickens = chickenService.getAllChickens();
 		eggService.passDays(numberOfDays);
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
-		newEggs.stream().forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+		newEggs.stream()
+		// Revisar si vende o descarta el excedente de HUEVOS. 
+		.filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
+		.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 		
 	}
 	

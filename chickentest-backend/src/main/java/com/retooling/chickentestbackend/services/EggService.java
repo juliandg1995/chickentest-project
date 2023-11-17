@@ -98,6 +98,26 @@ public class EggService {
 		return price * 0.5;
 	}
 	
+	public boolean eggStockControl(Long farmId) {
+		return this.getAllEggsByFarmOwnerId(farmId).size() != Farm.getMaxStockOfEggs();
+	}
+	
+//	public void eggStockControl(Long farmId) throws InsufficientStockException, 
+//		  											NoEggsException, 
+//		  											InsufficientPaymentException, 
+//		  											FarmNotFoundException {
+//		List<Egg> eggs = getAllEggsByFarmOwnerId(farmId);
+//		double eggPrice;
+//		if (!eggs.isEmpty()) {
+//			eggPrice = eggs.get(0).getSellPrice();
+//		} else {
+//			eggPrice = Egg.getDefaultSellPrice();
+//		}
+//		if (eggs.size() == Farm.getMaxStockOfEggs()) {
+//			farmService.sellEggs(1, eggPrice, farmId);
+//		}
+//	}
+	
     public String passDays(int days) throws IterationException, MaxStockException {
 
         try {

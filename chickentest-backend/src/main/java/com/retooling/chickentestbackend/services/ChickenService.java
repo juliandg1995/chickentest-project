@@ -23,6 +23,7 @@ public class ChickenService {
 
 	@Autowired
 	private FarmService farmService;
+	
 
 	@Transactional
 	public Chicken createChicken(double sellPrice, int age, Long farmId) throws FarmNotFoundException {
@@ -53,17 +54,17 @@ public class ChickenService {
 	public double getChickenDiscount(double sellPrice) {
 		return sellPrice * 0.7;
 	}
-
+	
 	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
 
 		return chickens.stream().peek(c -> {
 			c.passDays(numberOfDays);
 			chickenRepository.save(c);
-		}).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0).map(c -> {
-			c.resetDaysToEggsCountdown();
-			return c;
-		}).flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+		 }).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
+		    .map(c -> { c.resetDaysToEggsCountdown(); return c; })	
+	       .flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
 	}
+
 
 // public String passDays(int days) {
 //	 this.getAllChickens().forEach(chicken -> {
