@@ -16,6 +16,7 @@ import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentExcep
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
@@ -337,7 +338,12 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoEggsException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
@@ -356,6 +362,7 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
+		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
@@ -369,7 +376,12 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoChickensException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
@@ -388,7 +400,8 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
-	    chickens.removeAll(soldChickens);
+	    soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
+		chickens.removeAll(soldChickens);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
