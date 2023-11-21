@@ -1,10 +1,10 @@
 package com.retooling.chickentestbackend.model;
 
-import jakarta.persistence.*;
+import java.util.List;
 
-import java.util.*;
-
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "chickens")
@@ -19,7 +19,7 @@ public class Chicken extends Product {
     @Column
     private int ageInDays;
     
-    private static int daysToPutEggs = 5;
+    private static int daysToPutEggs = 10;
     
     private static int eggAmount = 1;
     
@@ -90,19 +90,6 @@ public class Chicken extends Product {
 		for(Egg egg: eggs) {
 			egg.hatch();
 		}
-	}
-	
-	@Override
-	public boolean isDiscountMaterial() {
-		if (ageInDays < 10) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public void setDiscount() {
-		this.setSellPrice(getSellPrice() * 0.7);
 	}
     
 

@@ -10,7 +10,12 @@ import org.springframework.stereotype.Service;
 
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
+import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentException;
+import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
+import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
+import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
@@ -90,11 +95,35 @@ public class EggService {
 		return eggs.stream().filter(egg -> egg.getIsHatched()).collect(Collectors.toList());
 	}
 	
-    public String passDays(int days) throws IterationException {
+	public double getEggDiscount(double price) {
+		return price * 0.5;
+	}
+	
+	public boolean eggStockControl(Long farmId) {
+		return this.getAllEggsByFarmOwnerId(farmId).size() != Farm.getMaxStockOfEggs();
+	}
+	
+//	public void eggStockControl(Long farmId) throws InsufficientStockException, 
+//		  											NoEggsException, 
+//		  											InsufficientPaymentException, 
+//		  											FarmNotFoundException {
+//		List<Egg> eggs = getAllEggsByFarmOwnerId(farmId);
+//		double eggPrice;
+//		if (!eggs.isEmpty()) {
+//			eggPrice = eggs.get(0).getSellPrice();
+//		} else {
+//			eggPrice = Egg.getDefaultSellPrice();
+//		}
+//		if (eggs.size() == Farm.getMaxStockOfEggs()) {
+//			farmService.sellEggs(1, eggPrice, farmId);
+//		}
+//	}
+	
+    public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
 
         try {
             AtomicBoolean shouldCancel = new AtomicBoolean(false);
-
+           
             // For Eggs
             this.getAllEggs().forEach(egg -> {
 
@@ -105,11 +134,11 @@ public class EggService {
                 try {
                     egg.passDays(days);
                     if (egg.getIsEcloded()) {
-                        farmService.manageEclodedEgg(egg);
+                    	farmService.manageEclodedEgg(egg);
                     } else {
                     	eggRepository.save(egg);
                     }
-                } catch (FarmNotFoundException | FailedOperationException e) {
+                } catch ( NegativeValuesException| FarmNotFoundException | FailedOperationException | MaxStockException | InsufficientStockException | NoChickensException | InsufficientPaymentException e) {
                     shouldCancel.set(true);
                     throw new RuntimeException(e.getMessage());
                 }

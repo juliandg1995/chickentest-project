@@ -36,7 +36,7 @@ public class ChickenService {
 		return chickenRepository.save(newChicken);
 	}
 
-	// Delete the egg from the database
+	@Transactional
 	public void deleteChicken(Long chickenId) {
 		chickenRepository.deleteById(chickenId);
 	}
@@ -50,17 +50,14 @@ public class ChickenService {
 		return chickenRepository.findByFarmOwner_Id(farmOwnerId);
 	}
 
-	public List<Egg> passDays(int numberOfDays) {
-
-		List<Chicken> chickens = chickenRepository.findAll();
+	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
 
 		return chickens.stream().peek(c -> {
 			c.passDays(numberOfDays);
 			chickenRepository.save(c);
-		}).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0).map(c -> {
-			c.resetDaysToEggsCountdown();
-			return c;
-		}).flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+		 }).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
+		    .map(c -> { c.resetDaysToEggsCountdown(); return c; })	
+	       .flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
 	}
 
 // public String passDays(int days) {
@@ -78,5 +75,9 @@ public class ChickenService {
 // 	});
 // 	return days + " passed by successfully";	 
 // }
+	
+	public double getChickenDiscount(double sellPrice) {
+		return sellPrice * 0.7;
+	}
 
 }
