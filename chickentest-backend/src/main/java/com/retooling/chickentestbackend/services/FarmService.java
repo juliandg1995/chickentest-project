@@ -2,6 +2,7 @@ package com.retooling.chickentestbackend.services;
 
 import java.security.InvalidParameterException;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
@@ -399,7 +400,7 @@ public class FarmService {
 		}
 		
 	    //Cattle and money amount update
-		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
+		List<Egg> soldEggs = new ArrayList<Egg>(eggs.subList(eggs.size() - amount, eggs.size()));
 		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
@@ -438,7 +439,7 @@ public class FarmService {
 		}
 		
 	    //Cattle and money amount update
-		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
+		List<Chicken> soldChickens = new ArrayList<Chicken>(chickens.subList(chickens.size() - amount, chickens.size()));
 		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
 		chickens.removeAll(soldChickens);
 
