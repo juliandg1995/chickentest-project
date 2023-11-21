@@ -14,6 +14,7 @@ import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentExcep
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Egg;
@@ -118,7 +119,7 @@ public class EggService {
 //		}
 //	}
 	
-    public String passDays(int days) throws IterationException, MaxStockException {
+    public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
 
         try {
             AtomicBoolean shouldCancel = new AtomicBoolean(false);
@@ -137,7 +138,7 @@ public class EggService {
                     } else {
                     	eggRepository.save(egg);
                     }
-                } catch (FarmNotFoundException | FailedOperationException | MaxStockException | InsufficientStockException | NoChickensException | InsufficientPaymentException e) {
+                } catch ( NegativeValuesException| FarmNotFoundException | FailedOperationException | MaxStockException | InsufficientStockException | NoChickensException | InsufficientPaymentException e) {
                     shouldCancel.set(true);
                     throw new RuntimeException(e.getMessage());
                 }

@@ -16,6 +16,7 @@ import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentExcep
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
@@ -198,7 +199,8 @@ public class FarmService {
 	@Transactional
 	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException, 
 														  MaxStockException, InsufficientStockException, 
-														  NoChickensException, InsufficientPaymentException {
+														  NoChickensException, InsufficientPaymentException, 
+														  NegativeValuesException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
 		// al eliminar de lista
 
@@ -236,7 +238,7 @@ public class FarmService {
 	}
 
 	@Transactional
-	public String manageNewEggs(Long farmId) throws FailedOperationException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
+	public String manageNewEggs(Long farmId) throws NegativeValuesException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
 		try {
 			double eggPrice;
 			Farm farm = farmRepository.findById(farmId).get();
@@ -263,7 +265,7 @@ public class FarmService {
 		}
 	}
 
-	public void passDays(int numberOfDays) throws FailedOperationException, InvalidParameterException, IterationException, MaxStockException {
+	public void passDays(int numberOfDays) throws NegativeValuesException, FailedOperationException, InvalidParameterException, IterationException, MaxStockException {
 		// For Eggs
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
@@ -374,7 +376,12 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoEggsException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
@@ -393,7 +400,7 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
-		soldEggs.stream().forEach(e-> eggService.deleteEgg(e.getId()));
+		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
@@ -407,7 +414,12 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoChickensException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
@@ -426,8 +438,9 @@ public class FarmService {
 		
 	    //Cattle and money amount update
 		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
-		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
-	    chickens.removeAll(soldChickens);
+	    soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
+		chickens.removeAll(soldChickens);
+
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    

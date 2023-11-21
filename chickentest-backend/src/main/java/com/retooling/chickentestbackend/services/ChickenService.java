@@ -23,7 +23,6 @@ public class ChickenService {
 
 	@Autowired
 	private FarmService farmService;
-	
 
 	@Transactional
 	public Chicken createChicken(double sellPrice, int age, Long farmId) throws FarmNotFoundException {
@@ -65,21 +64,5 @@ public class ChickenService {
 	       .flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
 	}
 
-
-// public String passDays(int days) {
-//	 this.getAllChickens().forEach(chicken -> {
-// 		chicken.passDays(days);
-// 		if (chicken.getDaysToEggsCountdown() == 0) {
-// 			try {
-//// 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
-//     		    farmService.manageNewEggs(chicken.getfarmOwner().getId());
-// 			} catch(FailedOperationException e) {
-// 				e = new FailedOperationException("New eggs creation");
-// 				System.err.println(e.getMessage());
-// 			}
-// 		}
-// 	});
-// 	return days + " passed by successfully";	 
-// }
 
 }
