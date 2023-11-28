@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -266,7 +267,16 @@ public class FarmService {
 		}
 	}
 
-	public void passDays(int numberOfDays) throws NegativeValuesException, FailedOperationException, InvalidParameterException, IterationException, MaxStockException {
+	public void passDays(int numberOfDays) throws NegativeValuesException, 
+												  FailedOperationException, 
+												  InvalidParameterException, 
+												  IterationException, 
+												  MaxStockException 
+//												  InsufficientStockException,
+//												  NoEggsException,
+//												  NegativeValuesException,
+//												  InsufficientPaymentException
+											      {
 		// For Eggs
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
@@ -276,9 +286,15 @@ public class FarmService {
 		eggService.passDays(numberOfDays);
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 		newEggs.stream()
-		// Revisar si vende o descarta el excedente de HUEVOS. 
-		.filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
-		.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+			   .filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
+			   .forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+
+		//		Intentando vender el exceso, no me deja arrojar las excepciones del método sellEggs con un forEach.
+		//		Las gallinas ahora no quedan con 0 días para poner huevos luego de descartar los nuevos. 
+//		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId())).collect(Collectors.toList());
+//		excess.forEach(egg -> this.sellEggs(1, Egg.getDefaultSellPrice(), egg.getfarmOwner().getId()));
+//		newEggs.removeAll(excess);
+//		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 		
 	}
 	
