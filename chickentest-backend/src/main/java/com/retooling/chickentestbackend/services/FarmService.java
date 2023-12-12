@@ -1,6 +1,7 @@
 package com.retooling.chickentestbackend.services;
 
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,6 +17,7 @@ import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentExcep
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientStockException;
 import com.retooling.chickentestbackend.exceptions.farm.IterationException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
@@ -195,30 +197,68 @@ public class FarmService {
 		}
 	}
 
-
 	@Transactional
-	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException {
+	public void manageEclodedEgg(Egg anEclodedEgg) throws FarmNotFoundException, FailedOperationException, 
+														  MaxStockException, InsufficientStockException, 
+														  NoChickensException, InsufficientPaymentException, 
+														  NegativeValuesException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
 		// al eliminar de lista
-		Long farmOwnerId = anEclodedEgg.getfarmOwner().getId();
-		if (farmOwnerId.equals(null)) {
+
+		Farm farmOwner = anEclodedEgg.getfarmOwner();
+		if (farmOwner.equals(null)) {
 			throw new FarmNotFoundException(0L);
 		}
-		double chickenPrice = chickenService.getAllChickensByFarmOwnerId(farmOwnerId).get(0).getSellPrice();
-		this.removeEggFromList(farmOwnerId, anEclodedEgg);
+		Long farmOwnerId = farmOwner.getId();
+		
+		// Stock control
+		List<Chicken> chickens = farmOwner.getChickens();
+		
+		double chickenPrice;
+		if (!chickens.isEmpty()) {
+			chickenPrice = chickens.get(0).getSellPrice();
+		} else {
+			chickenPrice = Chicken.getDefaultSellPrice();
+		}
+		
+		// If max stock is reached, a chicken will be sold at discount
+		if (chickens.size() == Farm.getMaxStockOfChickens()) {
+			this.sellChickens(1, chickenPrice, farmOwnerId);
+		}
+		
+		List<Egg> eggs = farmOwner.getEggs();
+		if (eggs.contains(anEclodedEgg)) {
+			eggs.remove(anEclodedEgg);
+			eggService.deleteEgg(anEclodedEgg.getId());
+		}
+		
+//		this.removeEggFromList(farmOwnerId, anEclodedEgg);  -> Decidir si mantener el método, refactorizarlo o eliminarlo
 		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
+		
 	}
 
 	@Transactional
-	public String manageNewEggs(Long farmId) throws FailedOperationException {
+	public String manageNewEggs(Long farmId) throws NegativeValuesException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
 		try {
-//			Optional<Farm> farmOptional = this.getFarmById(farmId);
-//			Farm farm = farmOptional.get();
+			double eggPrice;
 			Farm farm = farmRepository.findById(farmId).get();
-			double sellPrice = farm.getEggs().get(0).getSellPrice();
+			List<Egg> eggs = farm.getEggs();
+			
+			if (!eggs.isEmpty()) {
+				eggPrice = eggs.get(0).getSellPrice();
+			} else {
+				eggPrice = Chicken.getDefaultSellPrice();
+			}
+			
+			// Stock Control
+			if (eggs.size() + Chicken.getEggAmount() > Farm.getMaxStockOfEggs()) {
+				int excess = (eggs.size() + Chicken.getEggAmount()) - Farm.getMaxStockOfEggs();
+			    sellEggs(excess, eggPrice, farm.getId());
+			}
+			
 			for (int i = 0; i < Chicken.getEggAmount(); i++) {
-				eggService.createEgg(sellPrice, farmId);
+				eggService.createEgg(eggPrice, farmId);
 			}
 			return "OK";
 		} catch (EntityNotFoundException e) {
@@ -226,17 +266,34 @@ public class FarmService {
 		}
 	}
 
-	public void passDays(int numberOfDays) throws FailedOperationException, InvalidParameterException, IterationException {
+	public void passDays(int numberOfDays) throws NegativeValuesException, 
+												  FailedOperationException, 
+												  InvalidParameterException, 
+												  IterationException, 
+												  MaxStockException 
+//												  InsufficientStockException,
+//												  NoEggsException,
+//												  NegativeValuesException,
+//												  InsufficientPaymentException
+											      {
 		// For Eggs
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
 		}
-//		eggService.passDays(numberOfDays);
-//		chickenService.passDays(numberOfDays);
 		
+		List<Chicken> actualChickens = chickenService.getAllChickens();
 		eggService.passDays(numberOfDays);
-		List<Egg> newEggs = chickenService.passDays(numberOfDays);
-		newEggs.stream().forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
+		newEggs.stream()
+			   .filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
+			   .forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+
+		//		Intentando vender el exceso, no me deja arrojar las excepciones del método sellEggs con un forEach.
+		//		Las gallinas ahora no quedan con 0 días para poner huevos luego de descartar los nuevos. 
+//		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId())).collect(Collectors.toList());
+//		excess.forEach(egg -> this.sellEggs(1, Egg.getDefaultSellPrice(), egg.getfarmOwner().getId()));
+//		newEggs.removeAll(excess);
+//		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 		
 	}
 	
@@ -335,25 +392,31 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoEggsException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
-	
-		List<Egg> eggs = eggService.getAllEggsByFarmOwnerId(fromFarmId);
+		List<Egg> eggs = farm.getEggs();
 		int currentStock = eggs.size();
 		
 		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
 		
-		double totalCost =  eggs.get(0).getSellPrice() * amount;
+//		double totalCost =  eggs.get(0).getSellPrice() * amount;
+		double totalCost = eggs.stream().findFirst().get().getSellPrice() * amount;
 		
 		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
 		}
 		
 	    //Cattle and money amount update
-		List<Egg> soldEggs = eggs.subList(eggs.size() - amount, eggs.size());
+		List<Egg> soldEggs = new ArrayList<Egg>(eggs.subList(eggs.size() - amount, eggs.size()));
+		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
 	    eggs.removeAll(soldEggs);
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
@@ -367,26 +430,37 @@ public class FarmService {
 		   throws InsufficientStockException, 
 		   		  NoChickensException, 
 		   		  InsufficientPaymentException, 
-		   		  FarmNotFoundException {
+		   		  FarmNotFoundException,
+		   		  NegativeValuesException{
+		
+		if ( amount < 0 || paymentAmount < 0 || fromFarmId < 0 ) {
+			throw new NegativeValuesException();
+		}
 		
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 	
-		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
+//		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
+
+		List<Chicken> chickens = farm.getChickens();
 		int currentStock = chickens.size();
 		
 		if ( currentStock <  amount ) {
 			throw new InsufficientStockException();
 		}
-		
-		double totalCost =  chickens.get(0).getSellPrice() * amount;
+		double totalCost = chickens.stream().findFirst().get().getSellPrice() * amount;
 		
 		if (paymentAmount < totalCost) {
 			throw new InsufficientPaymentException();
 		}
 		
 	    //Cattle and money amount update
-		List<Chicken> soldChickens = chickens.subList(chickens.size() - amount, chickens.size());
-	    chickens.removeAll(soldChickens);
+		List<Chicken> soldChickens = new ArrayList<Chicken>(chickens.subList(chickens.size() - amount, chickens.size()));
+		soldChickens.stream().forEach(c-> chickenService.deleteChicken(c.getId()));
+		chickens.removeAll(soldChickens);
+
+	    soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
+		chickens.removeAll(soldChickens);
+
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    

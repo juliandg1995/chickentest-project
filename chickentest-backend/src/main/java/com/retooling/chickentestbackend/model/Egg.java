@@ -78,18 +78,18 @@ public class Egg extends Product {
 		}
 	}
 
-	@Override
-	public boolean isDiscountMaterial() {
-		if (isHatched || this.getAgeInDays() < 5) {
-			return false;
-		}
-		return true;
-	}
-
-	@Override
-	public void setDiscount() {
-		this.setSellPrice(getSellPrice() * 0.5);
-	}
+//	@Override
+//	public boolean isDiscountMaterial() {
+//		if (isHatched || this.getAgeInDays() < 5) {
+//			return false;
+//		}
+//		return true;
+//	}
+//
+//	@Override
+//	public void setDiscount() {
+//		this.setSellPrice(getSellPrice() * 0.5);
+//	}
 
 	private void eclode() {
 		isEcloded = true;

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>GetFarmSummary</title>
+</head>
+<body>
+
+<h2>Farm Summary</h2>
+
+<!-- Formulario de getFarmSummary -->
+<form th:action="@{/farms/{id}/summary}" th:object="${farmId}" method="get" id="summaryForm" style="display: none;">
+    <label for="farmId">Farm ID:</label>
+    <input type="text" id="farmId" name="id" required>
+    <button type="submit">Get Farm Summary</button>
+</form>
+<!-- Se muestra el resultado del resumen-->
+<div th:if="${farmSummary}">
+    <p th:text="${farmSummary}"></p>
+</div>
+
+<!-- Script para mostrar/ocultar el formulario -->
+<script>
+    document.getElementById("showSummaryFormButton").addEventListener("click", function() {
+        var summaryForm = document.getElementById("summaryForm");
+        summaryForm.style.display = (summaryForm.style.display === "none") ? "block" : "none";
+    });
+</script>
+
+</body>
+</html>

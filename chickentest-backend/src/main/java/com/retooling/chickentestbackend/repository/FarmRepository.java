@@ -1,12 +1,10 @@
 package com.retooling.chickentestbackend.repository;
 
-import org.springframework.data.repository.CrudRepository;
 import java.util.Optional;
-import java.util.List;
+
+import org.springframework.data.repository.CrudRepository;
 
 import com.retooling.chickentestbackend.model.Farm;
-import com.retooling.chickentestbackend.model.Chicken;
-import com.retooling.chickentestbackend.model.Egg;
 
 public interface FarmRepository extends CrudRepository<Farm, Long>{
 //	Optional<Farm> findById(Long id);

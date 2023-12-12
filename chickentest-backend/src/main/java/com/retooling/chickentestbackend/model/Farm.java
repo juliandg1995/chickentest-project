@@ -22,11 +22,11 @@ public class Farm {
 	@Size(max = 255, message = "Farm name should not exceed 255 characters")
 	private String name;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "farmOwner")
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "farmOwner")
 	@JsonManagedReference
 	private List<Egg> eggs;
 	
-	@OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "farmOwner" )
+	@OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "farmOwner" )
 	@JsonManagedReference
 	private List<Chicken> chickens;
 	

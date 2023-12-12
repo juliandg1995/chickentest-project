@@ -22,6 +22,7 @@ import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientMoneyException;
 import com.retooling.chickentestbackend.exceptions.farm.InsufficientPaymentException;
 import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
+import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Farm;
@@ -154,7 +155,7 @@ public class FarmController {
 								   @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellEggs(eggAmount, payment, farmId));
-		} catch (InsufficientPaymentException e) {
+		} catch (InsufficientPaymentException | NegativeValuesException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		} catch (NoEggsException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -170,7 +171,7 @@ public class FarmController {
 									   @RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellChickens(amount, payment, farmId));
-		} catch (InsufficientPaymentException e) {
+		} catch (InsufficientPaymentException | NegativeValuesException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		} catch (NoChickensException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());

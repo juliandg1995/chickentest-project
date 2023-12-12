@@ -19,7 +19,7 @@ public class Chicken extends Product {
     @Column
     private int ageInDays;
     
-    private static int daysToPutEggs = 5;
+    private static int daysToPutEggs = 10;
     
     private static int eggAmount = 1;
     
@@ -90,19 +90,6 @@ public class Chicken extends Product {
 		for(Egg egg: eggs) {
 			egg.hatch();
 		}
-	}
-	
-	@Override
-	public boolean isDiscountMaterial() {
-		if (ageInDays < 10) {
-			return false;
-		}
-		return true;
-	}
-	
-	@Override
-	public void setDiscount() {
-		this.setSellPrice(getSellPrice() * 0.7);
 	}
     
 
