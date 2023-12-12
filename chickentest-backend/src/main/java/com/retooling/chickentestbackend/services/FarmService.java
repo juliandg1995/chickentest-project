@@ -378,7 +378,9 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 	    
-	    return amount + " eggs have been bought by " + farm.getName();
+	    return amount + " eggs have been bought by " 
+	    			  + farm.getName() 
+	    			  + " for $" + price;
 	
 	}
 	
@@ -409,7 +411,9 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 
-	    return amount + " chickens have been bought by " + farm.getName();
+	    return amount + " chickens have been bought by " 
+	    			  + farm.getName() 
+	    			  + " for $" + price;
 	}
 	
 	@Transactional
@@ -446,7 +450,9 @@ public class FarmService {
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
-	    return amount + " eggs have been sold by " + farm.getName();
+	    return amount + " eggs have been sold by " 
+	    			  + farm.getName()
+	    			  + " earning $" + paymentAmount;
 	
 	}	
 	
@@ -489,7 +495,9 @@ public class FarmService {
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
-	    return amount + " chickens have been sold by " + farm.getName();
+	    return amount + " chickens have been sold by " 
+	    			  + farm.getName()
+	    			  + " earning $" + paymentAmount;
 	
 	}		
 	
