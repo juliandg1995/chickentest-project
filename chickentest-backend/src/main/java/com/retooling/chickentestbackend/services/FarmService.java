@@ -25,7 +25,6 @@ import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 
-import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional; // -> Investigar qué hace y cuándo se usa
 
 @Service
@@ -238,43 +237,64 @@ public class FarmService {
 		
 	}
 
+//	@Transactional
+//	public String manageNewEggs(Long farmId) throws NegativeValuesException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
+//		try {
+//			double eggPrice;
+//			Farm farm = farmRepository.findById(farmId).get();
+//			List<Egg> eggs = farm.getEggs();
+//			
+//			if (!eggs.isEmpty()) {
+//				eggPrice = eggs.get(0).getSellPrice();
+//			} else {
+//				eggPrice = Chicken.getDefaultSellPrice();
+//			}
+//			
+//			// Stock Control
+//			if (eggs.size() + Chicken.getEggAmount() > Farm.getMaxStockOfEggs()) {
+//				int excess = (eggs.size() + Chicken.getEggAmount()) - Farm.getMaxStockOfEggs();
+//			    sellEggs(excess, eggPrice, farm.getId());
+//			}
+//			
+//			for (int i = 0; i < Chicken.getEggAmount(); i++) {
+//				eggService.createEgg(eggPrice, farmId);
+//			}
+//			return "OK";
+//		} catch (EntityNotFoundException e) {
+//			return e.getMessage();
+//		}
+//	}
+	
 	@Transactional
-	public String manageNewEggs(Long farmId) throws NegativeValuesException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
-		try {
-			double eggPrice;
-			Farm farm = farmRepository.findById(farmId).get();
-			List<Egg> eggs = farm.getEggs();
-			
-			if (!eggs.isEmpty()) {
-				eggPrice = eggs.get(0).getSellPrice();
-			} else {
-				eggPrice = Chicken.getDefaultSellPrice();
-			}
-			
-			// Stock Control
-			if (eggs.size() + Chicken.getEggAmount() > Farm.getMaxStockOfEggs()) {
-				int excess = (eggs.size() + Chicken.getEggAmount()) - Farm.getMaxStockOfEggs();
-			    sellEggs(excess, eggPrice, farm.getId());
-			}
-			
-			for (int i = 0; i < Chicken.getEggAmount(); i++) {
-				eggService.createEgg(eggPrice, farmId);
-			}
-			return "OK";
-		} catch (EntityNotFoundException e) {
-			return e.getMessage();
+	public void manageEggExcess(List<Egg> excess) throws InsufficientStockException,
+	  													 NoEggsException,
+	  													 NegativeValuesException,
+	  													 InsufficientPaymentException {
+		
+		if (excess.isEmpty()) {
+			return;
 		}
+		
+		double sellPrice = excess.get(0).getSellPrice();
+		if (sellPrice == 0) {
+			sellPrice = Egg.getDefaultSellPrice();
+		}
+		
+		for (int i = 0; i < excess.size(); i++) {
+			this.sellEggs(1, sellPrice, excess.get(i).getfarmOwner().getId());
+		}
+		
 	}
 
 	public void passDays(int numberOfDays) throws NegativeValuesException, 
 												  FailedOperationException, 
 												  InvalidParameterException, 
 												  IterationException, 
-												  MaxStockException 
-//												  InsufficientStockException,
-//												  NoEggsException,
-//												  NegativeValuesException,
-//												  InsufficientPaymentException
+												  MaxStockException, 
+												  InsufficientStockException,
+												  NoEggsException,
+												  NegativeValuesException,
+												  InsufficientPaymentException
 											      {
 		// For Eggs
 		if (numberOfDays < 1) {
@@ -284,16 +304,20 @@ public class FarmService {
 		List<Chicken> actualChickens = chickenService.getAllChickens();
 		eggService.passDays(numberOfDays);
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
-		newEggs.stream()
-			   .filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
-			   .forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 
-		//		Intentando vender el exceso, no me deja arrojar las excepciones del método sellEggs con un forEach.
-		//		Las gallinas ahora no quedan con 0 días para poner huevos luego de descartar los nuevos. 
-//		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId())).collect(Collectors.toList());
-//		excess.forEach(egg -> this.sellEggs(1, Egg.getDefaultSellPrice(), egg.getfarmOwner().getId()));
-//		newEggs.removeAll(excess);
-//		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+		
+		// Para descartar los nuevos huevos
+		//		newEggs.stream()
+		//	   .filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
+		//	   .forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+
+		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId())).collect(Collectors.toList());
+		if (!excess.isEmpty()) {
+			this.manageEggExcess(excess);
+		}
+		
+		newEggs.removeAll(excess);
+		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
 		
 	}
 	
@@ -353,7 +377,9 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 	    
-	    return amount + " eggs have been bought by " + farm.getName();
+	    return amount + " eggs have been bought by " 
+	    			  + farm.getName() 
+	    			  + " for $" + price;
 	
 	}
 	
@@ -384,7 +410,9 @@ public class FarmService {
 	    farm.spendMoney(total_cost);
 	    farmRepository.save(farm);
 
-	    return amount + " chickens have been bought by " + farm.getName();
+	    return amount + " chickens have been bought by " 
+	    			  + farm.getName() 
+	    			  + " for $" + price;
 	}
 	
 	@Transactional
@@ -421,7 +449,9 @@ public class FarmService {
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
-	    return amount + " eggs have been sold by " + farm.getName();
+	    return amount + " eggs have been sold by " 
+	    			  + farm.getName()
+	    			  + " earning $" + paymentAmount;
 	
 	}	
 	
@@ -464,7 +494,9 @@ public class FarmService {
 	    farm.earnMoney(totalCost); 
 	    farmRepository.save(farm);
 	    
-	    return amount + " chickens have been sold by " + farm.getName();
+	    return amount + " chickens have been sold by " 
+	    			  + farm.getName()
+	    			  + " earning $" + paymentAmount;
 	
 	}		
 	

@@ -51,30 +51,13 @@ public class ChickenService {
 	}
 
 	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
-
 		return chickens.stream().peek(c -> {
 			c.passDays(numberOfDays);
 //			chickenRepository.save(c);
 		 }).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
 		    .map(c -> { c.resetDaysToEggsCountdown(); chickenRepository.save(c); return c; })	
-	       .flatMap(c -> Stream.of(new Egg(c.getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+	       .flatMap(c -> Stream.of(new Egg(c.getfarmOwner().getEggs().get(0).getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
 	}
-
-// public String passDays(int days) {
-//	 this.getAllChickens().forEach(chicken -> {
-// 		chicken.passDays(days);
-// 		if (chicken.getDaysToEggsCountdown() == 0) {
-// 			try {
-//// 				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
-//     		    farmService.manageNewEggs(chicken.getfarmOwner().getId());
-// 			} catch(FailedOperationException e) {
-// 				e = new FailedOperationException("New eggs creation");
-// 				System.err.println(e.getMessage());
-// 			}
-// 		}
-// 	});
-// 	return days + " passed by successfully";	 
-// }
 	
 	public double getChickenDiscount(double sellPrice) {
 		return sellPrice * 0.7;
