@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -38,6 +40,9 @@ public class FarmController {
 
 	@Autowired
 	private FarmService farmService;
+
+//	@Autowired
+//	private ViewController viewController;
 
 	@Transactional
 	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -83,6 +88,7 @@ public class FarmController {
 		}
 	}
 
+	/// For API testing:
 	@GetMapping(value = "getFarm/{id}/summary")
 	public ResponseEntity<String> getFarmSummary(@PathVariable Long id) {
 		try {
@@ -92,17 +98,18 @@ public class FarmController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + id);
 		}
 	}
-	
-	  @GetMapping("/{id}/money")
-	  public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
-	      Double money = farmService.getMoneyById(id);
-	      if (money != null) {
-	          return ResponseEntity.ok(money);
-	      } else {
-	          return ResponseEntity.notFound().build();
-	      }
-	  }   
 
+	@GetMapping("/{id}/money")
+	public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
+		Double money = farmService.getMoneyById(id);
+		if (money != null) {
+			return ResponseEntity.ok(money);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// For API testing:
 	@PostMapping(value = "/passDays/{numberOfDays}")
 	public ResponseEntity<String> passDays(@PathVariable int numberOfDays) {
 		try {
@@ -115,12 +122,13 @@ public class FarmController {
 		}
 	}
 
+
 	@SuppressWarnings("rawtypes")
-	// Ejemplo request: localhost:8080/farms/buyNewEggs?eggAmount=2&eggPrice=10&farmId=1
+	// Ejemplo request:
+	// localhost:8080/farms/buyNewEggs?eggAmount=2&eggPrice=10&farmId=1
 	@PostMapping(value = "/buyNewEggs")
-	public ResponseEntity buyEggs(@RequestParam int eggAmount, 
-								  @RequestParam double eggPrice, 
-								  @RequestParam Long farmId) {
+	public ResponseEntity buyEggs(@RequestParam int eggAmount, @RequestParam double eggPrice,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewEggs(eggAmount, eggPrice, farmId));
 		} catch (InsufficientMoneyException | MaxStockException e) {
@@ -134,12 +142,11 @@ public class FarmController {
 
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/buyNewChickens")
-	public ResponseEntity buyChickens(@RequestParam int chickenAmount, 
-									  @RequestParam double chickenPrice, 
-									  @RequestParam Long farmId) {
+	public ResponseEntity buyChickens(@RequestParam int chickenAmount, @RequestParam double chickenPrice,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewChickens(chickenAmount, chickenPrice, farmId));
-		} catch (MaxStockException  |  InsufficientMoneyException e) {
+		} catch (MaxStockException | InsufficientMoneyException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		} catch (FarmNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -147,12 +154,11 @@ public class FarmController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/sellEggs")
-	public ResponseEntity sellEggs(@RequestParam int eggAmount, 
-								   @RequestParam double payment, 
-								   @RequestParam Long farmId) {
+	public ResponseEntity sellEggs(@RequestParam int eggAmount, @RequestParam double payment,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellEggs(eggAmount, payment, farmId));
 		} catch (InsufficientPaymentException | NegativeValuesException e) {
@@ -166,9 +172,8 @@ public class FarmController {
 
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/sellChickens")
-	public ResponseEntity sellChickens(@RequestParam int amount, 
-									   @RequestParam double payment, 
-									   @RequestParam Long farmId) {
+	public ResponseEntity sellChickens(@RequestParam int amount, @RequestParam double payment,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellChickens(amount, payment, farmId));
 		} catch (InsufficientPaymentException | NegativeValuesException e) {
@@ -178,6 +183,132 @@ public class FarmController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+
+	////////////////////////////////////////////////
+	///// 		    FORM CONTROLLERS 		   /////
+	////////////////////////////////////////////////
+	
+	
+	@GetMapping("/getFarmSummaryForm")
+	public String getFarmSummaryForm(@RequestParam(name = "farmId") Long farmId, Model model) {
+		try {
+			// Here it retrieves the farm summary from the service first, then sends it to
+			// the form
+			String farmSummary = farmService.getFarmSummaryById(farmId);
+			model.addAttribute("farmSummary", farmSummary);
+			return "farmSummary";
+		} catch (FarmNotFoundException e) {
+			model.addAttribute("farmSummary", e.getMessage() + farmId);
+			return "farmSummary";
+		}
+
+//		 model.addAttribute("farmSummary", "Hello, Farm!");	    
+//	     return viewController.getFarmSummaryForm(model);
+
+		// For some reason, the template is not being rendered
 	}	
+	
+	@PostMapping(value = "/getPassDaysForm")
+	public String passDaysForm(@RequestParam(name = "numberOfDays") int numberOfDays, Model model) {
+		try {
+			farmService.passDays(numberOfDays);
+			String response = numberOfDays + " have passed successfully";
+			model.addAttribute("response", response);
+			return "passDaysFormResponse";
+		} catch (InvalidParameterException e) {
+			String response = e.getMessage();
+			model.addAttribute("response", response);
+			return "passDaysFormRespose"; // You might want to create an error.html template for error messages
+		} catch (Exception e) {
+			String response = e.getMessage();
+			model.addAttribute("response", response);
+			return "passDaysFormResponse";
+		}
+	}	
+
+	@PostMapping(value = "/createFarmForm", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> createFarmForm(@Valid @ModelAttribute FarmRequestDTO farmRequest, Model model) {
+	    try {
+	        // Process the farm creation
+	        farmService.createFarm(farmRequest.getName(), farmRequest.getMoney());
+
+	        // Return an "OK" message
+	        return ResponseEntity.ok("Farm created successfully");
+	    } catch (Exception e) {
+	        // Handle exceptions and return an error response
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create farm");
+	    }
+	}
+//    @GetMapping("/createFarmForm")
+//    public String createFarmForm(Model model) {
+//    	// Add model attributes if needed
+//    	model.addAttribute("farmRequestDTO", new FarmRequestDTO());
+//        return "createFarmForm";
+//    }    
+
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/buyNewEggsForm")
+	public ResponseEntity buyNewEggsForm(@RequestParam int eggAmount, @RequestParam double eggPrice,
+			@RequestParam Long farmId) {
+		// Process the form data and perform actions
+		try {
+			return ResponseEntity.ok(farmService.buyNewEggs(eggAmount, eggPrice, farmId));
+		} catch (InsufficientMoneyException | MaxStockException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (FarmNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/buyNewChickensForm")
+	public ResponseEntity buyNewChickensForm(@RequestParam int chickenAmount, @RequestParam double chickenPrice,
+			@RequestParam Long farmId) {
+		// Process the form data and perform actions
+		try {
+			return ResponseEntity.ok(farmService.buyNewChickens(chickenAmount, chickenPrice, farmId));
+		} catch (MaxStockException | InsufficientMoneyException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (FarmNotFoundException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/sellEggsForm")
+	public ResponseEntity sellEggsForm(@RequestParam int eggAmount, @RequestParam double payment,
+			@RequestParam Long farmId) {
+		// Process the form data and perform actions
+		try {
+			return ResponseEntity.ok(farmService.sellEggs(eggAmount, payment, farmId));
+		} catch (InsufficientPaymentException | NegativeValuesException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (NoEggsException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	@PostMapping("/sellChickensForm")
+	public ResponseEntity sellChickensForm(@RequestParam int amount, @RequestParam double payment,
+			@RequestParam Long farmId) {
+		// Process the form data and perform actions
+		try {
+			return ResponseEntity.ok(farmService.sellChickens(amount, payment, farmId));
+		} catch (InsufficientPaymentException | NegativeValuesException e) {
+			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+		} catch (NoChickensException e) {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+	}
 
 }

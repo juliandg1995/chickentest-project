@@ -1,0 +1,54 @@
+<!-- /resources/templates/createFarmForm.html -->
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Create Farm</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+</head>
+<body>
+    <h1>Create Farm</h1>
+
+    <form id="createFarmForm">
+        <label for="name">Farm Name:</label>
+        <input type="text" id="name" name="name" required />
+
+        <label for="money">Farm Money:</label>
+        <input type="text" id="money" name="money" required />
+
+        <button type="button" onclick="submitForm()">Submit</button>
+    </form>
+
+    <div id="successMessage" style="display: none;">
+        <!-- This div will be shown on successful form submission -->
+    </div>
+
+    <script>
+        function submitForm() {
+            var formData = {
+                name: $('#name').val(),
+                money: $('#money').val()
+            };
+
+            $.ajax({
+                type: 'POST',
+                url: '/farms/createFarm', // Correct endpoint URL
+                contentType: 'application/json',
+                data: JSON.stringify(formData),
+                success: function(data) {
+                    // Handle success response
+                    console.log(data);
+
+                    // Display success message
+                    $('#successMessage').text('Farm ' + data.name + ' successfully created');
+                    $('#successMessage').show();
+                },
+                error: function(error) {
+                    // Handle error response
+                    console.error(error);
+                }
+            });
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Farm Summary</title>
+</head>
+
+<body>
+	<h1>Farm Summary</h1>
+	
+	<!--
+	<form th:action="@{/farms/getFarm/{id}/summary}" th:method="get">
+         <label for="farmId">Farm ID:</label>
+         <input type="text" id="farmId" name="farmId" required />
+
+        <button type="submit">Get Summary</button>
+    </form> 
+    -->
+    
+    <!-- Testing tag it is not being rendered... -->
+     <p>Prueba</p>
+     <p th:text="${farmSummary}"></p>
+
+	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
+		 Display the retrieved information 
+		<p th:text="${farmSummary}"></p>
+	</div>
+	<div th:if="${farmSummary == null}" style="margin-top: 20px;">
+		 Display a message when farmSummary is null 
+		<p>No farm summary available.</p>
+	</div>
+
+</body>
+
+</html>

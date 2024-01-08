@@ -1,14 +1,67 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Farm Simulator</title>
+	<title>Main Screen</title>
 </head>
+
 <body>
-    <h1>Welcome to the Farm Simulator</h1>
-    <!-- Botones -->
-    
-	<a href="/farms/showSummaryForm">Show Farm Summary Form</a>
+	<h1>Main Screen</h1>
+
+	<!-- Get Farm Summary -->
+	<!-- Call to the controller works correctly -->
+	<form th:action="@{/farms/getFarmSummaryForm}" method="get">
+		<label for="id">Farm Id:</label>
+		<input type="text" id="id" name="farmId" required>
+		<button type="submit">Get Farm Summary</button>
+	</form>
+	<br>
 	
-    <!-- Add more buttons as needed -->
+	<!-- Pass Days -->
+	<form action="@{/farms/getPassDaysForm}" method="post">
+		<label for="numberOfDays">Number of Days:</label>
+		<input type="text" id="numberOfDays" name="numberOfDays" required>
+		<button type="submit">Pass Days</button>
+	<!-- <p th:text="${response}"></p>-->
+	</form>
+	<br>
+
+	<!-- Create Farm -->
+    <form action="@{/farms/createFarmForm}" method="post" th:object="${farmRequest}">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" value="" required>
+        <br>
+        <label for="money">Money:</label>
+        <input type="number" id="money" name="money" value="" required>
+        <br>
+        <button type="submit">Create Farm</button>
+    </form>
+    <br>
+
+	<!-- Buy New Eggs -->
+	<form action="/buyNewEggs" method="post">
+		<!-- Add input fields for buying eggs if needed -->
+		<button type="submit">Buy New Eggs</button>
+	</form>
+
+	<!-- Buy New Chickens -->
+	<form action="/buyNewChickens" method="post">
+		<!-- Add input fields for buying chickens if needed -->
+		<button type="submit">Buy New Chickens</button>
+	</form>
+
+	<!-- Sell Eggs -->
+	<form action="/sellEggs" method="post">
+		<!-- Add input fields for selling eggs if needed -->
+		<button type="submit">Sell Eggs</button>
+	</form>
+
+	<!-- Sell Chickens -->
+	<form action="/sellChickens" method="post">
+		<!-- Add input fields for selling chickens if needed -->
+		<button type="submit">Sell Chickens</button>
+	</form>
+
 </body>
+
 </html>
