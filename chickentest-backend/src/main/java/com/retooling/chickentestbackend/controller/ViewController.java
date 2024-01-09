@@ -1,6 +1,7 @@
 package com.retooling.chickentestbackend.controller;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
@@ -11,9 +12,9 @@ public class ViewController {
 		return "farm_main";
 	}
 
-//	@GetMapping("/getFarmSummaryForm")
-//	public String getFarmSummaryForm(Model model) {
-//		return "getFarmSummary";
-//	}
+	@GetMapping("/getFarmSummaryForm")
+	public String getFarmSummaryForm(Model model) {
+		return "farmSummary";
+	}
 
 }
