@@ -23,24 +23,24 @@
 
 	<!-- Pass Days -->
 	<h4>Pass Days</h4>
-	<form action="@{/farms/getPassDaysForm}" method="post">
+	<form action="/farms/getPassDaysForm" method="post">
 		<label for="numberOfDays">Number of Days:</label>
 		<input type="text" id="numberOfDays" name="numberOfDays" required>
 		<button type="submit">Pass Days</button>
-		<!-- <p th:text="${response}"></p>-->
+		 <p th:text="${response}"></p>
 	</form>
 	<br>
 
 	<!-- Create Farm -->
 	<h4>Create Farm</h4>
-	<form action="@{/farms/createFarmForm}" method="post" th:object="${farmRequest}">
+	<form action="/farms/createFarmForm" th:object="${farmRequest}" method="post">
 		<label for="name">Name:</label>
-		<!--		 <input type="text" id="name" name="name" th:field="${farmRequest.name}" required>-->
-		<input type="text" id="name" name="name" value="Granja Prueba" required>
+		<input type="text" th:field="*{name}" required>
+		<!--		<input type="text" id="name" name="name" value="Granja Prueba" required>-->
 		<br>
 		<label for="money">Money:</label>
-		<!--		<input type="number" id="money" name="money" th:field="${farmRequest.money}" required>-->
-		<input type="number" id="money" name="money" value="200" required>
+		<input type="number" th:field="*{money}" required>
+		<!--		<input type="number" id="money" name="money" value="200" required>-->
 		<br>
 		<button type="submit">Create Farm</button>
 	</form>

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.FarmRequestDTO;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
@@ -34,7 +34,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/farms")
 public class FarmController {
 
@@ -42,7 +43,7 @@ public class FarmController {
 	private FarmService farmService;
 
 //	@Autowired
-	private ViewController viewController;
+//	private ViewController viewController;
 
 	@Transactional
 	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -196,14 +197,12 @@ public class FarmController {
 			// the form
 			String farmSummary = farmService.getFarmSummaryById(farmId);
 			model.addAttribute("farmSummary", farmSummary);
-			return this.viewController.getFarmSummaryForm(model);
-//			return "farmSummary";
+//			return this.viewController.getFarmSummaryForm(model);
 //			return "farm_main";
+			return "farmSummary";
 		} catch (FarmNotFoundException e) {
 			model.addAttribute("farmSummary", e.getMessage() + farmId);
-			return this.viewController.getFarmSummaryForm(model);
-//			return "farmSummary";
-//			return "farm_main";
+			return "farmSummary";
 		}
 
 //		 model.addAttribute("farmSummary", "Hello, Farm!");	    
@@ -214,13 +213,13 @@ public class FarmController {
 	public String passDaysForm(@RequestParam(name = "numberOfDays") int numberOfDays, Model model) {
 		try {
 			farmService.passDays(numberOfDays);
-			String response = numberOfDays + " have passed successfully";
+			String response = numberOfDays + " days have passed successfully";
 			model.addAttribute("response", response);
 			return "passDaysFormResponse";
 		} catch (InvalidParameterException e) {
 			String response = e.getMessage();
 			model.addAttribute("response", response);
-			return "passDaysFormRespose"; // You might want to create an error.html template for error messages
+			return "passDaysFormRespose"; 
 		} catch (Exception e) {
 			String response = e.getMessage();
 			model.addAttribute("response", response);
@@ -233,7 +232,6 @@ public class FarmController {
 		try {
 			// Process the farm creation
 			farmService.createFarm(farmRequest.getName(), farmRequest.getMoney());
-
 			// Return an "OK" message
 			return ResponseEntity.ok("Farm created successfully");
 		} catch (Exception e) {

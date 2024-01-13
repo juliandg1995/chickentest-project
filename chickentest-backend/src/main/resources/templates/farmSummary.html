@@ -16,17 +16,13 @@
         <button type="submit">Get Summary</button>
     </form> 
     -->
-    
-    <!-- Testing tag it is not being rendered... -->
-     <p>Prueba</p>
-     <p th:text="${farmSummary}"></p>
 
 	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
-		 Display the retrieved information 
+<!--		 Display the retrieved information -->
 		<p th:text="${farmSummary}"></p>
 	</div>
 	<div th:if="${farmSummary == null}" style="margin-top: 20px;">
-		 Display a message when farmSummary is null 
+<!--		 Display a message when farmSummary is null -->
 		<p>No farm summary available.</p>
 	</div>
 
