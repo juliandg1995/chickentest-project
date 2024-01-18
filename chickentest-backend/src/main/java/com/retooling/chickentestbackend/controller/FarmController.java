@@ -197,16 +197,11 @@ public class FarmController {
 			// the form
 			String farmSummary = farmService.getFarmSummaryById(farmId);
 			model.addAttribute("farmSummary", farmSummary);
-//			return this.viewController.getFarmSummaryForm(model);
-//			return "farm_main";
 			return "farmSummary";
 		} catch (FarmNotFoundException e) {
 			model.addAttribute("farmSummary", e.getMessage() + farmId);
 			return "farmSummary";
 		}
-
-//		 model.addAttribute("farmSummary", "Hello, Farm!");	    
-//	     return viewController.getFarmSummaryForm(model);
 	}
 
 	@PostMapping(value = "/getPassDaysForm")
@@ -245,36 +240,36 @@ public class FarmController {
 			Model model) {
 		try {
 			String buyEggsResponse = farmService.buyNewEggs(eggAmount, eggPrice, farmId);
-			model.addAttribute("buyEggsResponse", buyEggsResponse);
-			return "farm_main";
+			model.addAttribute("response", buyEggsResponse);
+			return "buyProducts";
 		} catch (InsufficientMoneyException | MaxStockException e) {
-			model.addAttribute("buyEggsResponse", e.getMessage());
-			return "farm_main";
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
 		} catch (FarmNotFoundException e) {
-			model.addAttribute("buyEggsResponse", e.getMessage());
-			return "farm_main";
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
 		} catch (Exception e) {
 			model.addAttribute("buyEggsResponse", e.getMessage());
-			return "farm_main";
+			return "buyProducts";
 		}
 	}
 
-	@PostMapping("/buyChickensForm")
+	@PostMapping(value = "/buyChickensForm")
 	public String buyChickensForm(@RequestParam int chickenAmount, @RequestParam double chickenPrice, @RequestParam Long farmId,
 			Model model) {
 		try {
 			String buyChickensResponse = farmService.buyNewChickens(chickenAmount, chickenPrice, farmId);
-			model.addAttribute("buyChickensResponse", buyChickensResponse);
-			return "farm_main";
+			model.addAttribute("response", buyChickensResponse);
+			return "buyProducts";
 		} catch (InsufficientMoneyException | MaxStockException e) {
-			model.addAttribute("buyChickensResponse", e.getMessage());
-			return "farm_main";
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
 		} catch (FarmNotFoundException e) {
-			model.addAttribute("buyChickensResponse", e.getMessage());
-			return "farm_main";
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
 		} catch (Exception e) {
-			model.addAttribute("buyChickensResponse", e.getMessage());
-			return "farm_main";
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
 		}
 	}
 
@@ -283,17 +278,17 @@ public class FarmController {
 	                            @RequestParam Long farmId, Model model) {
 	    try {
 	        String sellEggsResponse = farmService.sellEggs(eggAmount, payment, farmId);
-	        model.addAttribute("sellEggsResponse", sellEggsResponse);
-	        return "farm_main";
+	        model.addAttribute("response", sellEggsResponse);
+	        return "sellProducts";
 	    } catch (InsufficientPaymentException | NegativeValuesException e) {
-	        model.addAttribute("sellEggsResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    } catch (NoEggsException e) {
-	        model.addAttribute("sellEggsResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    } catch (Exception e) {
-	        model.addAttribute("sellEggsResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    }
 	}
 
@@ -303,17 +298,17 @@ public class FarmController {
 	                               @RequestParam Long farmId, Model model) {
 	    try {
 	        String sellChickensResponse = farmService.sellChickens(chickenAmount, payment, farmId);
-	        model.addAttribute("sellChickensResponse", sellChickensResponse);
-	        return "farm_main";
+	        model.addAttribute("response", sellChickensResponse);
+	        return "sellProducts";
 	    } catch (InsufficientPaymentException | NegativeValuesException e) {
-	        model.addAttribute("sellChickensResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    } catch (NoChickensException e) {
-	        model.addAttribute("sellChickensResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    } catch (Exception e) {
-	        model.addAttribute("sellChickensResponse", e.getMessage());
-	        return "farm_main";
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
 	    }
 	}
 

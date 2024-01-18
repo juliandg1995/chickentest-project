@@ -36,11 +36,10 @@
 	<form action="/farms/createFarmForm" th:object="${farmRequest}" method="post">
 		<label for="name">Name:</label>
 		<input type="text" th:field="*{name}" required>
-		<!--		<input type="text" id="name" name="name" value="Granja Prueba" required>-->
 		<br>
+		
 		<label for="money">Money:</label>
 		<input type="number" th:field="*{money}" required>
-		<!--		<input type="number" id="money" name="money" value="200" required>-->
 		<br>
 		<button type="submit">Create Farm</button>
 	</form>
@@ -48,7 +47,7 @@
 
 	<!-- Buy New Eggs -->
 	<h4>Buy New Eggs</h4>
-	<form action="@{/farms/buyEggsForm}" method="post">
+	<form action="/farms/buyEggsForm" method="post">
 		<label for="eggAmount">Egg Amount:</label>
 		<input type="number" id="eggAmount" name="eggAmount" required>
 		<br>
@@ -69,15 +68,11 @@
 		<p th:text="${buyEggsResponse}"></p>
 	</div>
 
-	<!--	<form action="/buyNewEggs" method="post">-->
-	<!--		 Add input fields for buying eggs if needed -->
-	<!--		<button type="submit">Buy New Eggs</button>-->
-	<!--	</form>-->
 	<br>
 
 	<!-- Buy New Chickens -->
 	<h4>Buy New Chickens</h4>
-	<form action="@{/farms/buyChickensForm}" method="post">
+	<form action="/farms/buyChickensForm" method="post">
 		<label for="chickenAmount">Chicken Amount:</label>
 		<input type="number" id="chickenAmount" name="chickenAmount" required>
 		<br>
@@ -101,7 +96,7 @@
 
 	<!-- Sell Eggs -->
 	<h4>Sell Eggs</h4>
-	<form action="@{/farms/sellEggsForm}" method="post">
+	<form action="/farms/sellEggsForm" method="post">
 		<label for="eggAmount">Egg Amount:</label>
 		<input type="number" id="eggAmount" name="eggAmount" required>
 		<br>
@@ -125,9 +120,9 @@
 
 	<!-- Sell Chickens -->
 	<h4>Sell Chickens</h4>
-	<form action="@{/farms/sellChickensForm}" method="post">
-		<label for="chickensAmount">Chicken Amount:</label>
-		<input type="number" id="chickensAmount" name="chickensAmount" required>
+	<form action="/farms/sellChickensForm" method="post">
+		<label for="chickenAmount">Chicken Amount:</label>
+		<input type="number" id="chickenAmount" name="chickenAmount" required>
 		<br>
 
 		<label for="payment">Payment:</label>
@@ -142,8 +137,8 @@
 	</form>
 
 	<!-- Display the response message -->
-	<div th:if="${sellChickensResponse != null}">
-		<p th:text="${sellChickensResponse}"></p>
+	<div th:if="${response != null}">
+		<p th:text="${response}"></p>
 	</div>
 	<br>
 

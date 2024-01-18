@@ -7,15 +7,6 @@
 
 <body>
 	<h1>Farm Summary</h1>
-	
-	<!--
-	<form th:action="@{/farms/getFarm/{id}/summary}" th:method="get">
-         <label for="farmId">Farm ID:</label>
-         <input type="text" id="farmId" name="farmId" required />
-
-        <button type="submit">Get Summary</button>
-    </form> 
-    -->
 
 	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
 <!--		 Display the retrieved information -->

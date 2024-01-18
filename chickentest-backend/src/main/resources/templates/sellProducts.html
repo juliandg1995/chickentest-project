@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Pass Days Form Response</title>
+    <title>Sell Products</title>
 </head>
 <body>
-    <h1>Pass Days</h1>
-    <div th:if="${response != null}">
+    <h1>Sell Products</h1>
+    <div th:if="${response != null}" style="margin-top: 20px;">
         <p th:text="${response}"></p>
     </div>
-    <div th:if="${response == null}">
+    <div th:if="${response == null}"style="margin-top: 20px;">
         <p>No response available.</p>
     </div>
 </body>
