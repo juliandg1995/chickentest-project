@@ -222,18 +222,27 @@ public class FarmController {
 		}
 	}
 
-	@PostMapping(value = "/createFarmForm", produces = MediaType.APPLICATION_JSON_VALUE)
+	@PostMapping(value = "/createFarmForm")
 	public ResponseEntity<String> createFarmForm(@Valid @ModelAttribute FarmRequestDTO farmRequest, Model model) {
 		try {
 			// Process the farm creation
 			farmService.createFarm(farmRequest.getName(), farmRequest.getMoney());
-			// Return an "OK" message
 			return ResponseEntity.ok("Farm created successfully");
 		} catch (Exception e) {
-			// Handle exceptions and return an error response
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create farm");
 		}
 	}
+	
+	@PostMapping(value = "/deleteFarmForm", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deleteFarmForm(@RequestParam(name = "farmId") Long farmId, Model model) {
+	    try {
+	        // Process the farm deletion
+	        farmService.deleteFarmById(farmId);
+	        return ResponseEntity.ok("Farm deleted successfully");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete farm");
+	    }
+	}	
 
 	@PostMapping(value = "/buyEggsForm")
 	public String buyEggsForm(@RequestParam int eggAmount, @RequestParam double eggPrice, @RequestParam Long farmId,

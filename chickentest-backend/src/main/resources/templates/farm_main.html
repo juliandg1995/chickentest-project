@@ -27,7 +27,7 @@
 		<label for="numberOfDays">Number of Days:</label>
 		<input type="text" id="numberOfDays" name="numberOfDays" required>
 		<button type="submit">Pass Days</button>
-		 <p th:text="${response}"></p>
+		<!--<p th:text="${response}"></p>-->
 	</form>
 	<br>
 
@@ -37,11 +37,21 @@
 		<label for="name">Name:</label>
 		<input type="text" th:field="*{name}" required>
 		<br>
-		
+
 		<label for="money">Money:</label>
 		<input type="number" th:field="*{money}" required>
 		<br>
 		<button type="submit">Create Farm</button>
+	</form>
+	<br>
+
+	<!-- Delete Farm -->
+	<h4>Delete Farm</h4>
+	<form action="/farms/deleteFarmForm" method="post">
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="id" name="farmId" required>
+		<br>
+		<button type=" submit">Delete Farm</button>
 	</form>
 	<br>
 
