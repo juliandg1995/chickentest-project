@@ -53,10 +53,9 @@ public class ChickenService {
 	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
 		return chickens.stream().peek(c -> {
 			c.passDays(numberOfDays);
-//			chickenRepository.save(c);
 		 }).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
 		    .map(c -> { c.resetDaysToEggsCountdown(); chickenRepository.save(c); return c; })	
-	       .flatMap(c -> Stream.of(new Egg(c.getfarmOwner().getEggs().get(0).getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+	       .flatMap(c -> Stream.of(new Egg(farmService.getEggsPrice(c.getfarmOwner()), c.getfarmOwner()))).collect(Collectors.toList());
 	}
 	
 	public double getChickenDiscount(double sellPrice) {
