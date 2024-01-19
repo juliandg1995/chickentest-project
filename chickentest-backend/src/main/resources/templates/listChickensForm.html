@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>List Eggs Form</title>
+</head>
+
+<body>
+	<h2>List Chickens</h2>
+	<div th:if="${chickens != null}">
+		<table border="1">
+			<thead>
+				<tr>
+					<th>ID</th>
+					<th>Sell Price</th>
+					<th>Days to put Eggs</th>
+					<th>Age in Days</th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr th:each="chicken : ${chickens}">
+					<td th:text="${chicken.id}"></td>
+					<td th:text="${chicken.sellPrice}"></td>
+					<td th:text="${chicken.daysToEggsCountdown}"></td>
+					<td th:text="${chicken.ageInDays}"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div th:if="${chickens == null}">
+		<p th:text="${message}"></p>
+	<div/>
+</body>
+
+</html>

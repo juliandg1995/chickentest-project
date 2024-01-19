@@ -427,8 +427,6 @@ public class FarmService {
 
 		Farm farm = this.getFarmById(fromFarmId).orElseThrow(() -> new FarmNotFoundException(fromFarmId));
 
-//		List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(fromFarmId);
-
 		List<Chicken> chickens = farm.getChickens();
 		int currentStock = chickens.size();
 

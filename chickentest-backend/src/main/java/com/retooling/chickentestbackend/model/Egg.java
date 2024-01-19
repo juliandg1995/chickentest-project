@@ -1,12 +1,8 @@
 package com.retooling.chickentestbackend.model;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import com.fasterxml.jackson.annotation.JsonBackReference;
-
-import jakarta.persistence.*;
-import jakarta.transaction.Transactional;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "eggs")
@@ -23,7 +19,7 @@ public class Egg extends Product {
 	@Column(name = "ageInDays")
 	private int ageInDays;
 	
-	private static double defaultSellPrice = 1.00;
+	private static double defaultSellPrice = 5.00;
 
 	public Egg() {
 		super();
@@ -44,6 +40,14 @@ public class Egg extends Product {
 	public int getAgeInDays() {
 		return this.ageInDays;
 	}
+	
+	public int getChickenCountdown() {
+		return chickenCountdown;
+	}
+	
+	public static double getDefaultSellPrice(){
+		return defaultSellPrice;
+	}	
 
 	public void hatch() {
 		this.isHatched = true;
@@ -61,8 +65,8 @@ public class Egg extends Product {
 		return isEcloded;
 	}
 	
-	public static double getDefaultSellPrice(){
-		return defaultSellPrice;
+	private void eclode() {
+		isEcloded = true;
 	}
 
 	@Override
@@ -80,23 +84,6 @@ public class Egg extends Product {
 				break;
 			}
 		}
-	}
-
-//	@Override
-//	public boolean isDiscountMaterial() {
-//		if (isHatched || this.getAgeInDays() < 5) {
-//			return false;
-//		}
-//		return true;
-//	}
-//
-//	@Override
-//	public void setDiscount() {
-//		this.setSellPrice(getSellPrice() * 0.5);
-//	}
-
-	private void eclode() {
-		isEcloded = true;
 	}
 	
 
