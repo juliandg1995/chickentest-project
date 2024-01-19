@@ -42,9 +42,6 @@ public class FarmController {
 	@Autowired
 	private FarmService farmService;
 
-//	@Autowired
-//	private ViewController viewController;
-
 	@Transactional
 	@PostMapping(value = "/createFarm", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<Farm> createFarm(@Valid @RequestBody FarmRequestDTO farmRequest) {
@@ -186,10 +183,16 @@ public class FarmController {
 	}
 
 	////////////////////////////////////////////////
-	///// FORM CONTROLLERS /////
+	///// 			FORM CONTROLLERS 		   /////
 	////////////////////////////////////////////////
+	
+	@GetMapping("/getAllFarmsForm")
+    public String getAllFarmsForm(Model model) {
+        List<Farm> farms = farmService.getAllFarms();
+        model.addAttribute("farms", farms);
+        return "farmList";  
+    }
 
-	// For some reason, the template is not being rendered after method's execution
 	@GetMapping("/getFarmSummaryForm")
 	public String getFarmSummaryForm(@RequestParam(name = "farmId") Long farmId, Model model) {
 		try {
@@ -225,7 +228,6 @@ public class FarmController {
 	@PostMapping(value = "/createFarmForm")
 	public ResponseEntity<String> createFarmForm(@Valid @ModelAttribute FarmRequestDTO farmRequest, Model model) {
 		try {
-			// Process the farm creation
 			farmService.createFarm(farmRequest.getName(), farmRequest.getMoney());
 			return ResponseEntity.ok("Farm created successfully");
 		} catch (Exception e) {
@@ -236,7 +238,6 @@ public class FarmController {
 	@PostMapping(value = "/deleteFarmForm", produces = MediaType.APPLICATION_JSON_VALUE)
 	public ResponseEntity<String> deleteFarmForm(@RequestParam(name = "farmId") Long farmId, Model model) {
 	    try {
-	        // Process the farm deletion
 	        farmService.deleteFarmById(farmId);
 	        return ResponseEntity.ok("Farm deleted successfully");
 	    } catch (Exception e) {

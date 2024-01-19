@@ -253,34 +253,6 @@ public class FarmService {
 
 	}
 
-//	@Transactional
-//	public String manageNewEggs(Long farmId) throws NegativeValuesException, FarmNotFoundException, InsufficientStockException, NoEggsException, InsufficientPaymentException {
-//		try {
-//			double eggPrice;
-//			Farm farm = farmRepository.findById(farmId).get();
-//			List<Egg> eggs = farm.getEggs();
-//			
-//			if (!eggs.isEmpty()) {
-//				eggPrice = eggs.get(0).getSellPrice();
-//			} else {
-//				eggPrice = Chicken.getDefaultSellPrice();
-//			}
-//			
-//			// Stock Control
-//			if (eggs.size() + Chicken.getEggAmount() > Farm.getMaxStockOfEggs()) {
-//				int excess = (eggs.size() + Chicken.getEggAmount()) - Farm.getMaxStockOfEggs();
-//			    sellEggs(excess, eggPrice, farm.getId());
-//			}
-//			
-//			for (int i = 0; i < Chicken.getEggAmount(); i++) {
-//				eggService.createEgg(eggPrice, farmId);
-//			}
-//			return "OK";
-//		} catch (EntityNotFoundException e) {
-//			return e.getMessage();
-//		}
-//	}
-
 	@Transactional
 	public void manageEggExcess(List<Egg> excess)
 			throws InsufficientStockException, NoEggsException, NegativeValuesException, InsufficientPaymentException {
@@ -309,15 +281,12 @@ public class FarmService {
 		}
 
 		List<Chicken> actualChickens = chickenService.getAllChickens();
+		// Paso de días para huevos
 		eggService.passDays(numberOfDays);
+		// Paso de días para pollos
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
-		// Para descartar los nuevos huevos
-		// newEggs.stream()
-		// .filter(e -> eggService.eggStockControl(e.getfarmOwner().getId()))
-		// .forEach(e -> eggService.createEgg(e.getSellPrice(),
-		// e.getfarmOwner().getId()));
-
+		// Manjeo de excedente de huevos
 		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId()))
 				.collect(Collectors.toList());
 		if (!excess.isEmpty()) {
