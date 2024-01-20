@@ -8,7 +8,7 @@ import jakarta.persistence.Table;
 @Table(name = "eggs")
 public class Egg extends Product {
 
-	private static int daysToEclode = 4;
+	private static int daysToEclode = 5;
 
 	private int chickenCountdown;
 

@@ -220,7 +220,7 @@ public class FarmService {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
 		// al eliminar de lista
 
-		Farm farmOwner = anEclodedEgg.getfarmOwner();
+		Farm farmOwner = anEclodedEgg.getFarmOwner();
 		if (farmOwner.equals(null)) {
 			throw new FarmNotFoundException(0L);
 		}
@@ -267,7 +267,7 @@ public class FarmService {
 		}
 
 		for (int i = 0; i < excess.size(); i++) {
-			this.sellEggs(1, sellPrice, excess.get(i).getfarmOwner().getId());
+			this.sellEggs(1, sellPrice, excess.get(i).getFarmOwner().getId());
 		}
 
 	}
@@ -287,14 +287,14 @@ public class FarmService {
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
 		// Manjeo de excedente de huevos
-		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getfarmOwner().getId()))
+		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
 				.collect(Collectors.toList());
 		if (!excess.isEmpty()) {
 			this.manageEggExcess(excess);
 		}
 
 		newEggs.removeAll(excess);
-		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getfarmOwner().getId()));
+		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
 
 	}
 
