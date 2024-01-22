@@ -2,6 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Pass Days Form Response</title>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
     <h1>Pass Days</h1>
@@ -11,5 +12,7 @@
     <div th:if="${response == null}">
         <p>No response available.</p>
     </div>
+    <br>
+    <a th:href="@{/home}" class="button">Back to Home</a>
 </body>
 </html>

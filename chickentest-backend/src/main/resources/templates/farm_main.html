@@ -2,14 +2,15 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 <head>
-	<title>Main Screen</title>
+	<title>Farm Simulator</title>
+	<link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
-	<h1>Main Screen</h1>
+	<h1>Farm Simulator</h1>
 
 	<h4>List All Farms</h4>
-	<a th:href="@{/farms/getAllFarmsForm}">Ver Lista de Granjas</a>
+	<a th:href="@{/farms/getAllFarmsForm}" class="button">List All Farms</a>
 
 	<!-- Create Farm -->
 	<h4>Create Farm</h4>
@@ -21,7 +22,7 @@
 		<label for="money">Money:</label>
 		<input type="number" th:field="*{money}" required>
 		<br>
-		<button type="submit">Create Farm</button>
+		<button type="submit" class="button">Create Farm</button>
 	</form>
 	<br>
 
@@ -31,7 +32,7 @@
 		<label for="farmId">Farm ID:</label>
 		<input type="number" id="id" name="farmId" required>
 		<br>
-		<button type=" submit">Delete Farm</button>
+		<button type=" submit" class="button">Delete Farm</button>
 	</form>
 	<br>
 
@@ -39,7 +40,7 @@
 	<form th:action="@{/farms/getFarmSummaryForm}" method="get">
 		<label for="id">Farm Id:</label>
 		<input type="text" id="id" name="farmId" required>
-		<button type="submit">Get Farm Summary</button>
+		<button type="submit" class="button">Get Farm Summary</button>
 	</form>
 	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
 		<p th:text="${farmSummary}"></p>
@@ -51,7 +52,7 @@
 		<label for="farmOwnerId">Farm Owner ID: </label>
 		<input type="text" id="farmOwnerId" name="farmOwnerId" required>
 		<br>
-		<button type="submit">List Eggs</button>
+		<button type="submit" class="button">List Eggs</button>
 	</form>	
 	<br>
 	
@@ -60,7 +61,7 @@
 		<label for="farmOwnerId">Farm Owner ID: </label>
 		<input type="text" id="farmOwnerId" name="farmOwnerId" required>
 		<br>
-		<button type="submit">List Chickens</button>
+		<button type="submit" class="button">List Chickens</button>
 	</form>	
 	<br>
 
@@ -69,7 +70,7 @@
 		<label for="eggsId">Egg IDs (comma-separated): </label>
 		<input type="text" id="eggsId" name="eggsId" required>
 		<br>
-		<button type="submit">Hatch Eggs</button>
+		<button type="submit" class="button">Hatch Eggs</button>
 	</form>
 	
 	<br>
@@ -79,7 +80,7 @@
 		<label for="eggsId">Egg IDs (comma-separated): </label>
 		<input type="text" id="eggsId" name="eggsId" required>
 		<br>
-		<button type="submit">Unhatch Eggs</button>
+		<button type="submit" class="button">Unhatch Eggs</button>
 	</form>
 	<br>
 	
@@ -88,7 +89,7 @@
 	<form action="/farms/getPassDaysForm" method="post">
 		<label for="numberOfDays">Number of Days:</label>
 		<input type="text" id="numberOfDays" name="numberOfDays" required>
-		<button type="submit">Pass Days</button>
+		<button type="submit" class="button">Pass Days</button>
 		<!--<p th:text="${response}"></p>-->
 	</form>
 	<br>
@@ -108,7 +109,7 @@
 		<input type="number" id="farmId" name="farmId" required>
 		<br>
 
-		<button type="submit">Buy Eggs</button>
+		<button type="submit" class="button">Buy Eggs</button>
 	</form>
 
 	<!-- Display the response message -->
@@ -133,7 +134,7 @@
 		<input type="number" id="farmId" name="farmId" required>
 		<br>
 
-		<button type="submit">Buy Chickens</button>
+		<button type="submit" class="button">Buy Chickens</button>
 	</form>
 
 	<!-- Display the response message -->
@@ -157,7 +158,7 @@
 		<input type="number" id="farmId" name="farmId" required>
 		<br>
 
-		<button type="submit">Sell Eggs</button>
+		<button type="submit" class="button">Sell Eggs</button>
 	</form>
 
 	<!-- Display the response message -->
@@ -181,7 +182,7 @@
 		<input type="number" id="farmId" name="farmId" required>
 		<br>
 
-		<button type="submit">Sell Chickens</button>
+		<button type="submit" class="button">Sell Chickens</button>
 	</form>
 
 	<!-- Display the response message -->

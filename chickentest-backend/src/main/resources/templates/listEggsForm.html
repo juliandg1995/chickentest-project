@@ -4,6 +4,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>List Eggs Form</title>
+	<link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
@@ -31,9 +32,13 @@
 				</tr>
 			</tbody>
 		</table>
+		<br>
+		<a th:href="@{/home}" class="button">Back to Home</a>
 	</div>
 	<div th:if="${eggs == null}">
 		<p th:text="${message}"></p>
+		<br>
+		<a th:href="@{/home}" class="button">Back to Home</a>
 	<div/>
 
 </body>

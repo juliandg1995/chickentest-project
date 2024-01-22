@@ -252,7 +252,7 @@ public class FarmController {
 			String buyEggsResponse = farmService.buyNewEggs(eggAmount, eggPrice, farmId);
 			model.addAttribute("response", buyEggsResponse);
 			return "buyProducts";
-		} catch (InsufficientMoneyException | MaxStockException e) {
+		} catch (NegativeValuesException | InsufficientMoneyException | MaxStockException e) {
 			model.addAttribute("response", e.getMessage());
 			return "buyProducts";
 		} catch (FarmNotFoundException e) {
@@ -271,7 +271,7 @@ public class FarmController {
 			String buyChickensResponse = farmService.buyNewChickens(chickenAmount, chickenPrice, farmId);
 			model.addAttribute("response", buyChickensResponse);
 			return "buyProducts";
-		} catch (InsufficientMoneyException | MaxStockException e) {
+		} catch (NegativeValuesException | InsufficientMoneyException | MaxStockException e) {
 			model.addAttribute("response", e.getMessage());
 			return "buyProducts";
 		} catch (FarmNotFoundException e) {

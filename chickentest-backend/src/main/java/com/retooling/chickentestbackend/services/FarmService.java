@@ -330,8 +330,12 @@ public class FarmService {
 
 	@Transactional
 	public String buyNewEggs(int amount, double price, Long forFarmId)
-			throws InsufficientMoneyException, MaxStockException, FarmNotFoundException {
+			throws InsufficientMoneyException, MaxStockException, FarmNotFoundException, NegativeValuesException {
 
+		if (amount < 0 || price < 0 || forFarmId < 0) {
+			throw new NegativeValuesException();
+		}
+		
 		Farm farm = this.getFarmById(forFarmId).orElseThrow(() -> new FarmNotFoundException(forFarmId));
 
 		int currentStock = eggService.getAllEggsByFarmOwnerId(forFarmId).size();
@@ -358,8 +362,12 @@ public class FarmService {
 
 	@Transactional
 	public String buyNewChickens(int amount, double price, Long forFarmId)
-			throws InsufficientMoneyException, MaxStockException, FarmNotFoundException {
-
+			throws InsufficientMoneyException, MaxStockException, FarmNotFoundException, NegativeValuesException {
+		
+		if (amount < 0 || price < 0 || forFarmId < 0) {
+			throw new NegativeValuesException();
+		}
+		
 		Farm farm = this.getFarmById(forFarmId).orElseThrow(() -> new FarmNotFoundException(forFarmId));
 
 		int currentStock = chickenService.getAllChickensByFarmOwnerId(forFarmId).size();

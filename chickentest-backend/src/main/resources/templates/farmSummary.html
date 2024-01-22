@@ -3,6 +3,7 @@
 
 <head>
 	<title>Farm Summary</title>
+	<link rel="stylesheet" href="/css/styles.css">
 </head>
 
 <body>
@@ -14,6 +15,8 @@
 	<div th:if="${farmSummary == null}" style="margin-top: 20px;">
 		<p>No farm summary available.</p>
 	</div>
+	
+	<a th:href="@{/home}" class="button">Back to Home</a>
 
 </body>
 
