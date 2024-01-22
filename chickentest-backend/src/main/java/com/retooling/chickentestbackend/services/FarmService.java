@@ -4,6 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -286,8 +287,9 @@ public class FarmService {
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
 		// Manjeo de excedente de huevos
-		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
-				.collect(Collectors.toList());
+		List<Egg> excess = newEggs.stream()
+								  .filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
+								  .collect(Collectors.toList());
 		if (!excess.isEmpty()) {
 			this.manageEggExcess(excess);
 		}
