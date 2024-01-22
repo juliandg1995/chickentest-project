@@ -259,7 +259,7 @@ public class FarmController {
 			model.addAttribute("response", e.getMessage());
 			return "buyProducts";
 		} catch (Exception e) {
-			model.addAttribute("buyEggsResponse", e.getMessage());
+			model.addAttribute("response", e.getMessage());
 			return "buyProducts";
 		}
 	}
