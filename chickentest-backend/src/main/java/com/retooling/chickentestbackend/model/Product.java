@@ -61,7 +61,7 @@ public abstract class Product {
 		this.farmOwner = newfarmOwner;
 	}
 
-	public Farm getfarmOwner() {
+	public Farm getFarmOwner() {
 		return farmOwner;
 	}
 

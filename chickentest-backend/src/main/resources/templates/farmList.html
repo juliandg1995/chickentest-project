@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Farm List</title>
+</head>
+<body>
+
+<h2>Farm List</h2>
+
+<table border="1">
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="farm : ${farms}">
+        <td th:text="${farm.id}"></td>
+        <td th:text="${farm.name}"></td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>

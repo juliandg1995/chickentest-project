@@ -1,8 +1,7 @@
 package com.retooling.chickentestbackend.services;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -51,14 +50,36 @@ public class ChickenService {
 	}
 
 	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
-		return chickens.stream().peek(c -> {
-			c.passDays(numberOfDays);
-//			chickenRepository.save(c);
-		 }).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAge() != 0)
-		    .map(c -> { c.resetDaysToEggsCountdown(); chickenRepository.save(c); return c; })	
-	       .flatMap(c -> Stream.of(new Egg(c.getfarmOwner().getEggs().get(0).getSellPrice(), c.getfarmOwner()))).collect(Collectors.toList());
+
+//		return chickens.stream().peek(c -> { 
+//		c.passDays(numberOfDays); 
+//		chickenRepository.save(c);
+//	 	}).filter(c -> c.getDaysToEggsCountdown() == 0 && c.getAgeInDays() != 0)
+//	    .map(c -> { c.resetDaysToEggsCountdown(); chickenRepository.save(c); return c; })	
+//       .flatMap(c -> Stream.of(new Egg(farmService.getEggsPrice(c.getFarmOwner()), c.getFarmOwner()))).collect(Collectors.toList());
+		
+		List<Egg> newEggs = new ArrayList<Egg>();
+
+		for (Chicken chicken : chickens) {
+			int totalDays = numberOfDays;
+			while (totalDays > 0) {
+				int daysCounter = chicken.getDaysToEggsCountdown();
+				chicken.passDays(totalDays);
+				
+				totalDays -= daysCounter;
+
+				if (chicken.getDaysToEggsCountdown() == 0 && chicken.getAgeInDays() != 0) {
+					chicken.resetDaysToEggsCountdown();
+
+					Egg egg = new Egg(farmService.getEggsPrice(chicken.getFarmOwner()), chicken.getFarmOwner());
+					newEggs.add(egg);
+				}
+				chickenRepository.save(chicken);
+			}
+		}
+		return newEggs;
 	}
-	
+
 	public double getChickenDiscount(double sellPrice) {
 		return sellPrice * 0.7;
 	}

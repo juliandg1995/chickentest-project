@@ -1,14 +1,196 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
+
 <head>
-    <title>Farm Simulator</title>
+	<title>Main Screen</title>
 </head>
+
 <body>
-    <h1>Welcome to the Farm Simulator</h1>
-    <!-- Botones -->
-    
-	<a href="/farms/showSummaryForm">Show Farm Summary Form</a>
+	<h1>Main Screen</h1>
+
+	<h4>List All Farms</h4>
+	<a th:href="@{/farms/getAllFarmsForm}">Ver Lista de Granjas</a>
+
+	<!-- Create Farm -->
+	<h4>Create Farm</h4>
+	<form action="/farms/createFarmForm" th:object="${farmRequest}" method="post">
+		<label for="name">Name:</label>
+		<input type="text" th:field="*{name}" required>
+		<br>
+
+		<label for="money">Money:</label>
+		<input type="number" th:field="*{money}" required>
+		<br>
+		<button type="submit">Create Farm</button>
+	</form>
+	<br>
+
+	<!-- Delete Farm -->
+	<h4>Delete Farm</h4>
+	<form action="/farms/deleteFarmForm" method="post">
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="id" name="farmId" required>
+		<br>
+		<button type=" submit">Delete Farm</button>
+	</form>
+	<br>
+
+	<h4>Get Farm Summary</h4>
+	<form th:action="@{/farms/getFarmSummaryForm}" method="get">
+		<label for="id">Farm Id:</label>
+		<input type="text" id="id" name="farmId" required>
+		<button type="submit">Get Farm Summary</button>
+	</form>
+	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
+		<p th:text="${farmSummary}"></p>
+	</div>
+	<br>
 	
-    <!-- Add more buttons as needed -->
+	<h4>List Eggs by Farm ID</h4>
+	<form action="/eggs/getEggsByFarmIdForm" method="get">
+		<label for="farmOwnerId">Farm Owner ID: </label>
+		<input type="text" id="farmOwnerId" name="farmOwnerId" required>
+		<br>
+		<button type="submit">List Eggs</button>
+	</form>	
+	<br>
+	
+	<h4>List Chickens by Farm ID</h4>
+	<form action="/chickens/getChickensByFarmIdForm" method="get">
+		<label for="farmOwnerId">Farm Owner ID: </label>
+		<input type="text" id="farmOwnerId" name="farmOwnerId" required>
+		<br>
+		<button type="submit">List Chickens</button>
+	</form>	
+	<br>
+
+	<h4>Hatch Eggs</h4>
+	<form action="/eggs/hatchEggsForm" method="post">
+		<label for="eggsId">Egg IDs (comma-separated): </label>
+		<input type="text" id="eggsId" name="eggsId" required>
+		<br>
+		<button type="submit">Hatch Eggs</button>
+	</form>
+	
+	<br>
+	
+	<h4>Unhatch Eggs</h4>
+	<form action="/eggs/unhatchEggsForm" method="post">
+		<label for="eggsId">Egg IDs (comma-separated): </label>
+		<input type="text" id="eggsId" name="eggsId" required>
+		<br>
+		<button type="submit">Unhatch Eggs</button>
+	</form>
+	<br>
+	
+	<!-- Pass Days -->
+	<h4>Pass Days</h4>
+	<form action="/farms/getPassDaysForm" method="post">
+		<label for="numberOfDays">Number of Days:</label>
+		<input type="text" id="numberOfDays" name="numberOfDays" required>
+		<button type="submit">Pass Days</button>
+		<!--<p th:text="${response}"></p>-->
+	</form>
+	<br>
+
+	<!-- Buy New Eggs -->
+	<h4>Buy New Eggs</h4>
+	<form action="/farms/buyEggsForm" method="post">
+		<label for="eggAmount">Egg Amount:</label>
+		<input type="number" id="eggAmount" name="eggAmount" required>
+		<br>
+
+		<label for="eggPrice">Egg Price:</label>
+		<input type="number" id="eggPrice" name="eggPrice" required>
+		<br>
+
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="farmId" name="farmId" required>
+		<br>
+
+		<button type="submit">Buy Eggs</button>
+	</form>
+
+	<!-- Display the response message -->
+	<div th:if="${buyEggsResponse != null}">
+		<p th:text="${buyEggsResponse}"></p>
+	</div>
+
+	<br>
+
+	<!-- Buy New Chickens -->
+	<h4>Buy New Chickens</h4>
+	<form action="/farms/buyChickensForm" method="post">
+		<label for="chickenAmount">Chicken Amount:</label>
+		<input type="number" id="chickenAmount" name="chickenAmount" required>
+		<br>
+
+		<label for="eggPrice">Egg Price:</label>
+		<input type="number" id="chickenPrice" name="chickenPrice" required>
+		<br>
+
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="farmId" name="farmId" required>
+		<br>
+
+		<button type="submit">Buy Chickens</button>
+	</form>
+
+	<!-- Display the response message -->
+	<div th:if="${buyChickensResponse != null}">
+		<p th:text="${buyChickensResponse}"></p>
+	</div>
+	<br>
+
+	<!-- Sell Eggs -->
+	<h4>Sell Eggs</h4>
+	<form action="/farms/sellEggsForm" method="post">
+		<label for="eggAmount">Egg Amount:</label>
+		<input type="number" id="eggAmount" name="eggAmount" required>
+		<br>
+
+		<label for="payment">Payment:</label>
+		<input type="number" id="payment" name="payment" required>
+		<br>
+
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="farmId" name="farmId" required>
+		<br>
+
+		<button type="submit">Sell Eggs</button>
+	</form>
+
+	<!-- Display the response message -->
+	<div th:if="${sellEggsResponse != null}">
+		<p th:text="${sellEggsResponse}"></p>
+	</div>
+	<br>
+
+	<!-- Sell Chickens -->
+	<h4>Sell Chickens</h4>
+	<form action="/farms/sellChickensForm" method="post">
+		<label for="chickenAmount">Chicken Amount:</label>
+		<input type="number" id="chickenAmount" name="chickenAmount" required>
+		<br>
+
+		<label for="payment">Payment:</label>
+		<input type="number" id="payment" name="payment" required>
+		<br>
+
+		<label for="farmId">Farm ID:</label>
+		<input type="number" id="farmId" name="farmId" required>
+		<br>
+
+		<button type="submit">Sell Chickens</button>
+	</form>
+
+	<!-- Display the response message -->
+	<div th:if="${response != null}">
+		<p th:text="${response}"></p>
+	</div>
+	<br>
+
+
 </body>
+
 </html>

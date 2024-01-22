@@ -9,8 +9,8 @@ public class FarmRequestDTO {
 		
 	}
 	
-	public FarmRequestDTO(String aName, double money) {
-		name = aName;
+	public FarmRequestDTO(String name, double money) {
+		this.name = name;
 		this.money = money;
 	}
 	

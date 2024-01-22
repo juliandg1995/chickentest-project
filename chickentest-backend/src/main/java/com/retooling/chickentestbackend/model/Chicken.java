@@ -23,7 +23,7 @@ public class Chicken extends Product {
     
     private static int eggAmount = 1;
     
-    private static double defaultSellPrice = 5.00;
+    private static double defaultSellPrice = 10.00;
     
 	/** Constructors **/
     
@@ -55,7 +55,7 @@ public class Chicken extends Product {
 		return daysToEggsCountdown;
 	}
 
-	public int getAge() {
+	public int getAgeInDays() {
 		return ageInDays;
 	}
 	

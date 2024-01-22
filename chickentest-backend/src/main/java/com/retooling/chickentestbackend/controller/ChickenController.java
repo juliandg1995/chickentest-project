@@ -5,10 +5,12 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.services.ChickenService;
@@ -16,7 +18,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
 
-@RestController
+@Controller
 @RequestMapping("/chickens")
 public class ChickenController {
 	
@@ -26,28 +28,8 @@ public class ChickenController {
 	@SuppressWarnings("unused")
 	private FarmService farmService;
 	
-//	@PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
-//	public ResponseEntity<Chicken> createChicken(@RequestBody double sell_price, int age) {
-//
-//		return ResponseEntity.ok(chickenService.createChicken(sell_price, age));
-//	}
-
-//	@Transactional
-//    @PostMapping(value = "/createChicken", produces = MediaType.APPLICATION_JSON_VALUE)
-//    public ResponseEntity<Chicken> createChicken(
-//            @RequestBody ChickenRequestDTO chickenRequest) {
-//    	try {
-//    		Chicken newChicken = chickenService.createChicken(chickenRequest.getSellPrice(),
-//    														  chickenRequest.getAge(),
-//    														  chickenRequest.getFarmId());
-//    		return ResponseEntity.ok(newChicken);
-//    	} catch(NoFarmFoundException e) {
-//    		 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
-//    	}
-//    }
 	
 	// To get ALL chickens
-	// Este funciona bien
 	@GetMapping(value = "/getChickens")
 	public ResponseEntity<List<Chicken>> getChickens() {
 		try {
@@ -59,7 +41,6 @@ public class ChickenController {
 	}	
 	
 	// To get ALL chickens searching BY FARM ID
-	// Este también funciona bien
     @GetMapping("/getChickensByFarmId/{farmOwnerId}")
     public ResponseEntity<List<Chicken>> getChickensByFarmOwnerId(@PathVariable Long farmOwnerId) {
     	try {
@@ -69,5 +50,21 @@ public class ChickenController {
     		return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
     	}
     }	
+    
+	////////////////////////////////////////////////
+	///// 			FORM CONTROLLERS 		   /////
+	////////////////////////////////////////////////
+	
+	 @GetMapping("/getChickensByFarmIdForm")
+	    public String showChickensByFarmId(@RequestParam Long farmOwnerId, Model model) {
+	        try {
+	            List<Chicken> chickens = chickenService.getAllChickensByFarmOwnerId(farmOwnerId);
+	            model.addAttribute("chickens", chickens);
+	            return "listChickensForm";  
+	        } catch (EntityNotFoundException e) {
+	        	model.addAttribute("message", e.getMessage());
+	            return "listChickensForm";
+	        }
+	    }    
 
 }

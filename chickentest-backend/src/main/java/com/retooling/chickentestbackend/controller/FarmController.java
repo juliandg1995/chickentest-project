@@ -8,14 +8,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.FarmRequestDTO;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
@@ -32,7 +34,8 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 
-@RestController
+//@RestController
+@Controller
 @RequestMapping("/farms")
 public class FarmController {
 
@@ -83,6 +86,7 @@ public class FarmController {
 		}
 	}
 
+	/// For API testing:
 	@GetMapping(value = "getFarm/{id}/summary")
 	public ResponseEntity<String> getFarmSummary(@PathVariable Long id) {
 		try {
@@ -92,17 +96,18 @@ public class FarmController {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage() + id);
 		}
 	}
-	
-	  @GetMapping("/{id}/money")
-	  public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
-	      Double money = farmService.getMoneyById(id);
-	      if (money != null) {
-	          return ResponseEntity.ok(money);
-	      } else {
-	          return ResponseEntity.notFound().build();
-	      }
-	  }   
 
+	@GetMapping("/{id}/money")
+	public ResponseEntity<Double> getFarmMoneyById(@PathVariable Long id) {
+		Double money = farmService.getMoneyById(id);
+		if (money != null) {
+			return ResponseEntity.ok(money);
+		} else {
+			return ResponseEntity.notFound().build();
+		}
+	}
+
+	// For API testing:
 	@PostMapping(value = "/passDays/{numberOfDays}")
 	public ResponseEntity<String> passDays(@PathVariable int numberOfDays) {
 		try {
@@ -115,12 +120,12 @@ public class FarmController {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	// Ejemplo request: localhost:8080/farms/buyNewEggs?eggAmount=2&eggPrice=10&farmId=1
+	// Ejemplo request:
+	// localhost:8080/farms/buyNewEggs?eggAmount=2&eggPrice=10&farmId=1
 	@PostMapping(value = "/buyNewEggs")
-	public ResponseEntity buyEggs(@RequestParam int eggAmount, 
-								  @RequestParam double eggPrice, 
-								  @RequestParam Long farmId) {
+	@SuppressWarnings("rawtypes")
+	public ResponseEntity buyEggs(@RequestParam int eggAmount, @RequestParam double eggPrice,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewEggs(eggAmount, eggPrice, farmId));
 		} catch (InsufficientMoneyException | MaxStockException e) {
@@ -134,12 +139,11 @@ public class FarmController {
 
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/buyNewChickens")
-	public ResponseEntity buyChickens(@RequestParam int chickenAmount, 
-									  @RequestParam double chickenPrice, 
-									  @RequestParam Long farmId) {
+	public ResponseEntity buyChickens(@RequestParam int chickenAmount, @RequestParam double chickenPrice,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.buyNewChickens(chickenAmount, chickenPrice, farmId));
-		} catch (MaxStockException  |  InsufficientMoneyException e) {
+		} catch (MaxStockException | InsufficientMoneyException e) {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		} catch (FarmNotFoundException e) {
 			return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
@@ -147,12 +151,11 @@ public class FarmController {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/sellEggs")
-	public ResponseEntity sellEggs(@RequestParam int eggAmount, 
-								   @RequestParam double payment, 
-								   @RequestParam Long farmId) {
+	public ResponseEntity sellEggs(@RequestParam int eggAmount, @RequestParam double payment,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellEggs(eggAmount, payment, farmId));
 		} catch (InsufficientPaymentException | NegativeValuesException e) {
@@ -166,9 +169,8 @@ public class FarmController {
 
 	@SuppressWarnings("rawtypes")
 	@PostMapping(value = "/sellChickens")
-	public ResponseEntity sellChickens(@RequestParam int amount, 
-									   @RequestParam double payment, 
-									   @RequestParam Long farmId) {
+	public ResponseEntity sellChickens(@RequestParam int amount, @RequestParam double payment,
+			@RequestParam Long farmId) {
 		try {
 			return ResponseEntity.ok(farmService.sellChickens(amount, payment, farmId));
 		} catch (InsufficientPaymentException | NegativeValuesException e) {
@@ -178,6 +180,146 @@ public class FarmController {
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
+	}
+
+	////////////////////////////////////////////////
+	///// 			FORM CONTROLLERS 		   /////
+	////////////////////////////////////////////////
+	
+	@GetMapping("/getAllFarmsForm")
+    public String getAllFarmsForm(Model model) {
+        List<Farm> farms = farmService.getAllFarms();
+        model.addAttribute("farms", farms);
+        return "farmList";  
+    }
+
+	@GetMapping("/getFarmSummaryForm")
+	public String getFarmSummaryForm(@RequestParam(name = "farmId") Long farmId, Model model) {
+		try {
+			// Here it retrieves the farm summary from the service first, then sends it to
+			// the form
+			String farmSummary = farmService.getFarmSummaryById(farmId);
+			model.addAttribute("farmSummary", farmSummary);
+			return "farmSummary";
+		} catch (FarmNotFoundException e) {
+			model.addAttribute("farmSummary", e.getMessage() + farmId);
+			return "farmSummary";
+		}
+	}
+
+	@PostMapping(value = "/getPassDaysForm")
+	public String passDaysForm(@RequestParam(name = "numberOfDays") int numberOfDays, Model model) {
+		try {
+			farmService.passDays(numberOfDays);
+			String response = numberOfDays + " days have passed successfully";
+			model.addAttribute("response", response);
+			return "passDaysFormResponse";
+		} catch (InvalidParameterException e) {
+			String response = e.getMessage();
+			model.addAttribute("response", response);
+			return "passDaysFormRespose"; 
+		} catch (Exception e) {
+			String response = e.getMessage();
+			model.addAttribute("response", response);
+			return "passDaysFormResponse";
+		}
+	}
+
+	@PostMapping(value = "/createFarmForm")
+	public ResponseEntity<String> createFarmForm(@Valid @ModelAttribute FarmRequestDTO farmRequest, Model model) {
+		try {
+			farmService.createFarm(farmRequest.getName(), farmRequest.getMoney());
+			return ResponseEntity.ok("Farm created successfully");
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create farm");
+		}
+	}
+	
+	@PostMapping(value = "/deleteFarmForm", produces = MediaType.APPLICATION_JSON_VALUE)
+	public ResponseEntity<String> deleteFarmForm(@RequestParam(name = "farmId") Long farmId, Model model) {
+	    try {
+	        farmService.deleteFarmById(farmId);
+	        return ResponseEntity.ok("Farm deleted successfully");
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to delete farm");
+	    }
 	}	
+
+	@PostMapping(value = "/buyEggsForm")
+	public String buyEggsForm(@RequestParam int eggAmount, @RequestParam double eggPrice, @RequestParam Long farmId,
+			Model model) {
+		try {
+			String buyEggsResponse = farmService.buyNewEggs(eggAmount, eggPrice, farmId);
+			model.addAttribute("response", buyEggsResponse);
+			return "buyProducts";
+		} catch (InsufficientMoneyException | MaxStockException e) {
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
+		} catch (FarmNotFoundException e) {
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
+		} catch (Exception e) {
+			model.addAttribute("buyEggsResponse", e.getMessage());
+			return "buyProducts";
+		}
+	}
+
+	@PostMapping(value = "/buyChickensForm")
+	public String buyChickensForm(@RequestParam int chickenAmount, @RequestParam double chickenPrice, @RequestParam Long farmId,
+			Model model) {
+		try {
+			String buyChickensResponse = farmService.buyNewChickens(chickenAmount, chickenPrice, farmId);
+			model.addAttribute("response", buyChickensResponse);
+			return "buyProducts";
+		} catch (InsufficientMoneyException | MaxStockException e) {
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
+		} catch (FarmNotFoundException e) {
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
+		} catch (Exception e) {
+			model.addAttribute("response", e.getMessage());
+			return "buyProducts";
+		}
+	}
+
+	@PostMapping(value = "/sellEggsForm")
+	public String sellEggsForm(@RequestParam int eggAmount, @RequestParam double payment,
+	                            @RequestParam Long farmId, Model model) {
+	    try {
+	        String sellEggsResponse = farmService.sellEggs(eggAmount, payment, farmId);
+	        model.addAttribute("response", sellEggsResponse);
+	        return "sellProducts";
+	    } catch (InsufficientPaymentException | NegativeValuesException e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    } catch (NoEggsException e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    } catch (Exception e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    }
+	}
+
+
+	@PostMapping(value = "/sellChickensForm")
+	public String sellChickensForm(@RequestParam int chickenAmount, @RequestParam double payment,
+	                               @RequestParam Long farmId, Model model) {
+	    try {
+	        String sellChickensResponse = farmService.sellChickens(chickenAmount, payment, farmId);
+	        model.addAttribute("response", sellChickensResponse);
+	        return "sellProducts";
+	    } catch (InsufficientPaymentException | NegativeValuesException e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    } catch (NoChickensException e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    } catch (Exception e) {
+	        model.addAttribute("response", e.getMessage());
+	        return "sellProducts";
+	    }
+	}
 
 }

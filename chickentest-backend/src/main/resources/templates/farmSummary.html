@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+	<title>Farm Summary</title>
+</head>
+
+<body>
+	<h1>Farm Summary</h1>
+
+	<div th:if="${farmSummary != null}" style="margin-top: 20px;">
+		<p th:text="${farmSummary}"></p>
+	</div>
+	<div th:if="${farmSummary == null}" style="margin-top: 20px;">
+		<p>No farm summary available.</p>
+	</div>
+
+</body>
+
+</html>

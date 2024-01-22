@@ -103,22 +103,6 @@ public class EggService {
 		return this.getAllEggsByFarmOwnerId(farmId).size() != Farm.getMaxStockOfEggs();
 	}
 	
-//	public void eggStockControl(Long farmId) throws InsufficientStockException, 
-//		  											NoEggsException, 
-//		  											InsufficientPaymentException, 
-//		  											FarmNotFoundException {
-//		List<Egg> eggs = getAllEggsByFarmOwnerId(farmId);
-//		double eggPrice;
-//		if (!eggs.isEmpty()) {
-//			eggPrice = eggs.get(0).getSellPrice();
-//		} else {
-//			eggPrice = Egg.getDefaultSellPrice();
-//		}
-//		if (eggs.size() == Farm.getMaxStockOfEggs()) {
-//			farmService.sellEggs(1, eggPrice, farmId);
-//		}
-//	}
-	
     public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
 
         try {
@@ -149,23 +133,6 @@ public class EggService {
         }
         return days + " days passed by successfully";
     }	
-
-//	public String passDays(int days) {
-//		// For Eggs
-//		this.getAllEggs().forEach(egg -> {
-//			egg.passDays(days);
-//			if (egg.getIsEcloded()) {
-//				try {
-////    				this.deleteEgg(egg.getId()); -> No hace falta borrar de BDD
-//					farmService.manageEclodedEgg(egg);
-//				} catch (FailedOperationException e) {
-//					e = new FailedOperationException("Egg deletion");
-//					System.err.println(e.getMessage());
-//				}
-//			}
-//		});
-//		return days + " passed by successfully";
-//	}
 
 	@SuppressWarnings("unused")
 	public void hatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {

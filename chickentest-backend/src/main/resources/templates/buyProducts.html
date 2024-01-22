@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Buy Products</title>
+</head>
+<body>
+    <h1>Buy Products</h1>
+    <div th:if="${response != null}" style="margin-top: 20px;">
+        <p th:text="${response}"></p>
+    </div>
+    <div th:if="${response == null}"style="margin-top: 20px;">
+        <p>No response available.</p>
+    </div>
+</body>
+</html>
