@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.data.repository.CrudRepository;
 
 import com.retooling.chickentestbackend.model.Chicken;
-import com.retooling.chickentestbackend.model.Egg;
 
 public interface ChickenRepository extends CrudRepository<Chicken, Long>{
 	

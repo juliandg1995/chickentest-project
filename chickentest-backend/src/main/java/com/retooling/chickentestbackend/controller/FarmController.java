@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.FarmRequestDTO;
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
@@ -27,6 +28,7 @@ import com.retooling.chickentestbackend.exceptions.farm.MaxStockException;
 import com.retooling.chickentestbackend.exceptions.farm.NegativeValuesException;
 import com.retooling.chickentestbackend.exceptions.farm.NoChickensException;
 import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
+import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.services.FarmService;
 
@@ -213,6 +215,7 @@ public class FarmController {
 			farmService.passDays(numberOfDays);
 			String response = numberOfDays + " days have passed successfully";
 			model.addAttribute("response", response);
+			List<Chicken> chickens = farmService.getFarmById(Long.valueOf(1)).get().getChickens();
 			return "passDaysFormResponse";
 		} catch (InvalidParameterException e) {
 			String response = e.getMessage();

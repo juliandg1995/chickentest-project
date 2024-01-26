@@ -114,7 +114,6 @@ public class EggService {
                 if (shouldCancel.get()) {
                     return;
                 }
-
                 try {
                     egg.passDays(days);
                     if (egg.getIsEcloded()) {

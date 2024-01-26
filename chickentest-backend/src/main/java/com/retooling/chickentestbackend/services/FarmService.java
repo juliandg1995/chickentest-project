@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,7 @@ import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
+import com.retooling.chickentestbackend.repository.ChickenRepository;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 
 import jakarta.transaction.Transactional; // -> Investigar qué hace y cuándo se usa
@@ -33,12 +35,12 @@ public class FarmService {
 
 	//// Dependencies
 
-//	@Autowired
+	@Autowired
 	private FarmRepository farmRepository;
-//
+
 //	@Autowired		
 	private ChickenService chickenService;
-//	
+	
 //	@Autowired 
 	private EggService eggService;
 
@@ -229,11 +231,6 @@ public class FarmService {
 		// Stock control
 		List<Chicken> chickens = farmOwner.getChickens();
 
-//		if (!chickens.isEmpty()) {
-//			chickenPrice = chickens.get(0).getSellPrice();
-//		} else {
-//			chickenPrice = Chicken.getDefaultSellPrice();
-//		}
 		double chickenPrice = this.getChickenPrice(farmOwner);
 
 		// If max stock is reached, a chicken will be sold at discount
@@ -246,8 +243,7 @@ public class FarmService {
 			eggs.remove(anEclodedEgg);
 			eggService.deleteEgg(anEclodedEgg.getId());
 		}
-
-//		this.removeEggFromList(farmOwnerId, anEclodedEgg);  -> Decidir si mantener el método, refactorizarlo o eliminarlo
+		
 		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 
@@ -356,7 +352,7 @@ public class FarmService {
 		farm.spendMoney(total_cost);
 		farmRepository.save(farm);
 
-		return amount + " eggs have been bought by " + farm.getName() + " for $" + price;
+		return amount + " eggs have been bought by " + farm.getName() + " for a total of $" + total_cost;
 
 	}
 
@@ -388,7 +384,7 @@ public class FarmService {
 		farm.spendMoney(total_cost);
 		farmRepository.save(farm);
 
-		return amount + " chickens have been bought by " + farm.getName() + " for $" + price;
+		return amount + " chickens have been bought by " + farm.getName() + " for a total of $" + total_cost;
 	}
 
 	@Transactional
@@ -419,9 +415,11 @@ public class FarmService {
 		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
 		eggs.removeAll(soldEggs);
 		farm.earnMoney(totalCost);
+		double refund = paymentAmount - totalCost;
 		farmRepository.save(farm);
 
-		return amount + " eggs have been sold by " + farm.getName() + " earning $" + paymentAmount;
+		return amount + " eggs have been sold by " + farm.getName() + " earning $" + totalCost + "\n"
+					  + "$" + refund + " is refunded to the buyer";
 
 	}
 
@@ -449,17 +447,18 @@ public class FarmService {
 
 		// Cattle and money amount update
 		List<Chicken> soldChickens = new ArrayList<Chicken>(
-				chickens.subList(chickens.size() - amount, chickens.size()));
+					  chickens.subList(chickens.size() - amount, chickens.size()));
+		
 		soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
 		chickens.removeAll(soldChickens);
 
-		soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
-		chickens.removeAll(soldChickens);
-
-		farm.earnMoney(totalCost);
+		farm.earnMoney(paymentAmount);
+		double refund = paymentAmount - totalCost;
 		farmRepository.save(farm);
+		List<Chicken> chickens2 = farm.getChickens();
 
-		return amount + " chickens have been sold by " + farm.getName() + " earning $" + paymentAmount;
+		return amount + " chickens have been sold by " + farm.getName() + " earning $" + paymentAmount + "\n"
+			   + "$" + refund + " is refunded to the buyer";
 
 	}
 

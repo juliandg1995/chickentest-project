@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.retooling.chickentestbackend.dto.EggRequestDTO;
 import com.retooling.chickentestbackend.exceptions.farm.FailedOperationException;
@@ -28,6 +29,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+//@RestController
 @Controller
 @RequestMapping("/eggs")
 public class EggController {
