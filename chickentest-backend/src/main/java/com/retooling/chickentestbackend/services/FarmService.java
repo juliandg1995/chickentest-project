@@ -458,11 +458,11 @@ public class FarmService {
 		});
 		chickens.removeAll(soldChickens);
 
-		farm.earnMoney(paymentAmount);
+		farm.earnMoney(totalCost);
 		double refund = paymentAmount - totalCost;
 		farmRepository.save(farm);
 
-		return amount + " chickens have been sold by " + farm.getName() + " earning $" + paymentAmount + "\n"
+		return amount + " chickens have been sold by " + farm.getName() + " earning $" + totalCost + "\n"
 			   + "$" + refund + " is refunded to the buyer";
 
 	}
