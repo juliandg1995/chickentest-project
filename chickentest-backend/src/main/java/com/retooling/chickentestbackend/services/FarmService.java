@@ -412,11 +412,13 @@ public class FarmService {
 
 		// Cattle and money amount update
 		List<Egg> soldEggs = new ArrayList<Egg>(eggs.subList(eggs.size() - amount, eggs.size()));
+		
 		soldEggs.stream().forEach(e -> { 
 			eggService.deleteEgg(e.getId());
 			// Aquí borro el ID de la granja porque por algun motivo persiste en memoria y reasigna el huevo
-			e.setfarmOwner(null);
+//			e.setfarmOwner(null);
 		});
+		
 		eggs.removeAll(soldEggs);
 		farm.earnMoney(totalCost);
 		double refund = paymentAmount - totalCost;
@@ -467,5 +469,4 @@ public class FarmService {
 			   + "$" + refund + " is refunded to the buyer";
 
 	}
-
 }
