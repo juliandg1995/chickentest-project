@@ -28,6 +28,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
+//@RestController
 @Controller
 @RequestMapping("/eggs")
 public class EggController {

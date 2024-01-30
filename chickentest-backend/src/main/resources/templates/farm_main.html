@@ -106,7 +106,7 @@
 				<input type="number" id="eggAmount" name="eggAmount" required>
 				<br>
 
-				<label for="eggPrice">Egg Price:</label>
+				<label for="eggPrice">Price per Egg:</label>
 				<input type="number" id="eggPrice" name="eggPrice" required>
 				<br>
 
@@ -116,11 +116,6 @@
 
 				<button type="submit" class="button">Buy Eggs</button>
 			</form>
-
-			<!-- Display the response message -->
-			<div th:if="${buyEggsResponse != null}">
-				<p th:text="${buyEggsResponse}"></p>
-			</div>
 			<br>
 
 			<!-- Buy New Chickens -->
@@ -130,7 +125,7 @@
 				<input type="number" id="chickenAmount" name="chickenAmount" required>
 				<br>
 
-				<label for="eggPrice">Chicken Price:</label>
+				<label for="chickenPrice">Price per Chicken:</label>
 				<input type="number" id="chickenPrice" name="chickenPrice" required>
 				<br>
 
@@ -141,11 +136,6 @@
 				<button type="submit" class="button">Buy Chickens</button>
 			</form>
 
-			<!-- Display the response message -->
-			<div th:if="${buyChickensResponse != null}">
-				<p th:text="${buyChickensResponse}"></p>
-			</div>
-			<br>
 
 			<!-- Sell Eggs -->
 			<h4>Sell Eggs</h4>
@@ -164,11 +154,6 @@
 
 				<button type="submit" class="button">Sell Eggs</button>
 			</form>
-
-			<!-- Display the response message -->
-			<div th:if="${sellEggsResponse != null}">
-				<p th:text="${sellEggsResponse}"></p>
-			</div>
 			<br>
 
 			<!-- Sell Chickens -->
@@ -188,11 +173,6 @@
 
 				<button type="submit" class="button">Sell Chickens</button>
 			</form>
-
-			<!-- Display the response message -->
-			<div th:if="${response != null}">
-				<p th:text="${response}"></p>
-			</div>
 			<br>
 		</div>
 	</div>

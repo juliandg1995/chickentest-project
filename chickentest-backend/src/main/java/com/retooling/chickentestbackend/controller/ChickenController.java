@@ -18,6 +18,7 @@ import com.retooling.chickentestbackend.services.FarmService;
 
 import jakarta.persistence.EntityNotFoundException;
 
+//@RestController
 @Controller
 @RequestMapping("/chickens")
 public class ChickenController {
