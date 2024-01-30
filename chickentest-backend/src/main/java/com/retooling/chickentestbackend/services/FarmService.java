@@ -25,7 +25,6 @@ import com.retooling.chickentestbackend.exceptions.farm.NoEggsException;
 import com.retooling.chickentestbackend.model.Chicken;
 import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
-import com.retooling.chickentestbackend.repository.ChickenRepository;
 import com.retooling.chickentestbackend.repository.FarmRepository;
 
 import jakarta.transaction.Transactional; // -> Investigar qué hace y cuándo se usa
@@ -412,7 +411,11 @@ public class FarmService {
 
 		// Cattle and money amount update
 		List<Egg> soldEggs = new ArrayList<Egg>(eggs.subList(eggs.size() - amount, eggs.size()));
-		soldEggs.stream().forEach(e -> eggService.deleteEgg(e.getId()));
+		soldEggs.stream().forEach(e -> { 
+			eggService.deleteEgg(e.getId());
+			// Aquí borro el ID de la granja porque por algun motivo persiste en memoria y reasigna el huevo
+			e.setfarmOwner(null);
+		});
 		eggs.removeAll(soldEggs);
 		farm.earnMoney(totalCost);
 		double refund = paymentAmount - totalCost;
@@ -449,13 +452,15 @@ public class FarmService {
 		List<Chicken> soldChickens = new ArrayList<Chicken>(
 					  chickens.subList(chickens.size() - amount, chickens.size()));
 		
-		soldChickens.stream().forEach(c -> chickenService.deleteChicken(c.getId()));
+		soldChickens.stream().forEach(c ->  {
+			chickenService.deleteChicken(c.getId());
+			c.setfarmOwner(null);
+		});
 		chickens.removeAll(soldChickens);
 
 		farm.earnMoney(paymentAmount);
 		double refund = paymentAmount - totalCost;
 		farmRepository.save(farm);
-		List<Chicken> chickens2 = farm.getChickens();
 
 		return amount + " chickens have been sold by " + farm.getName() + " earning $" + paymentAmount + "\n"
 			   + "$" + refund + " is refunded to the buyer";
