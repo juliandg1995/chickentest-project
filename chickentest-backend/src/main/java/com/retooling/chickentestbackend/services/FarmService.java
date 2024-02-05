@@ -284,14 +284,27 @@ public class FarmService {
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
 		// Manjeo de excedente de huevos
-		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
-				.collect(Collectors.toList());
+		// VERSION VIEJA:
+//		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
+//				.collect(Collectors.toList());
+//		if (!excess.isEmpty()) {
+//			this.manageEggExcess(excess);
+//		}
+//
+//		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
+		
+		List<Egg> excess = new ArrayList<Egg>();
+		newEggs.forEach( newEgg -> { 
+			if( !eggService.eggStockControl(newEgg.getFarmOwner().getId())) {
+				excess.add(newEgg);
+			} 
+			eggService.createEgg(newEgg.getSellPrice(), newEgg.getFarmOwner().getId());
+		});
+		
 		if (!excess.isEmpty()) {
 			this.manageEggExcess(excess);
-		}
-
-		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
-
+		}		
+		
 	}
 
 	@Transactional

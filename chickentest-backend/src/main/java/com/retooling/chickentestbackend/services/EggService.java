@@ -100,7 +100,7 @@ public class EggService {
 	}
 	
 	public boolean eggStockControl(Long farmId) {
-		return this.getAllEggsByFarmOwnerId(farmId).size() != Farm.getMaxStockOfEggs();
+		return this.getAllEggsByFarmOwnerId(farmId).size() < Farm.getMaxStockOfEggs();
 	}
 	
     public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
