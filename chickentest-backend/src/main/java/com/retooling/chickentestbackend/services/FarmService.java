@@ -278,7 +278,6 @@ public class FarmService {
 		}
 
 		List<Chicken> actualChickens = chickenService.getAllChickens();
-		List<Egg> actualEggs = eggService.getAllEggs();
 		
 		// Paso de días para huevos
 		eggService.passDays(numberOfDays);
@@ -287,34 +286,37 @@ public class FarmService {
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
 		// Manjeo de excedente de huevos
-//		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
-//				.collect(Collectors.toList());
-//		if (!excess.isEmpty()) {
-//			this.manageEggExcess(excess);
-//		}
-//
-//		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
+		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
+				.collect(Collectors.toList());
 		
-		List<Egg> excess = new ArrayList<Egg>();
-		
-		newEggs.forEach( newEgg -> { 
-			Long farmId = newEgg.getFarmOwner().getId();
-			if( !eggService.eggStockControl(farmId)){
-				// Excess es la lista de huevos que voy a vender después
-				excess.add(newEgg);
-			} 
-		     // Antes de vender, agrego todos los huevos al repo de huevos
-			// Probé agregandolos directamente en la lista de huevos, pero no queda en la lista de la granja.
-			// actualEggs.add(newEgg);
-			 eggService.createEgg(newEgg.getSellPrice(), newEgg.getFarmOwner().getId());
-		});
-		
-		// Esto lo acabo de agregar para intentar forzar a que queden en la lista/repo de huevos
-		eggService.addEggs(newEggs);
+		// Esto falla cuando una gallina pone más de un huevo.
+		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
 		
 		if (!excess.isEmpty()) {
 			this.manageEggExcess(excess);
-		}		
+		}
+		
+		// Intenté corregirlo con esta solución, pero falla el hibernate al generar nuevos huevos dentro del foreach..
+//		List<Egg> excess = new ArrayList<Egg>();
+//		
+//		newEggs.forEach( newEgg -> { 
+//			Long farmId = newEgg.getFarmOwner().getId();
+//			if( !eggService.eggStockControl(farmId)){
+//				// Excess es la lista de huevos que voy a vender después
+//				excess.add(newEgg);
+//			} 
+//		     // Antes de vender, agrego todos los huevos al repo de huevos
+//			// Probé agregandolos directamente en la lista de huevos, pero no queda en la lista de la granja.
+//			// actualEggs.add(newEgg);
+//			 eggService.createEgg(newEgg.getSellPrice(), newEgg.getFarmOwner().getId());
+//		});
+//		
+//		// Esto lo acabo de agregar para intentar forzar a que queden en la lista/repo de huevos
+//		// eggService.addEggs(newEggs);
+//		
+//		if (!excess.isEmpty()) {
+//			this.manageEggExcess(excess);
+//		}		
 		
 	}
 
