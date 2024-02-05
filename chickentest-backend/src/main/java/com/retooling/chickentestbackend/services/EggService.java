@@ -110,14 +110,14 @@ public class EggService {
            
             // For Eggs
             this.getAllEggs().forEach(egg -> {
-
                 if (shouldCancel.get()) {
-                    return;
+                    return; 
                 }
                 try {
+                	int chickenAge = days - egg.getChickenCountdown();
                     egg.passDays(days);
                     if (egg.getIsEcloded()) {
-                    	farmService.manageEclodedEgg(egg);
+                    	farmService.manageEclodedEgg(egg, chickenAge);
                     } else {
                     	eggRepository.save(egg);
                     }

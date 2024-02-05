@@ -215,7 +215,7 @@ public class FarmService {
 	}
 
 	@Transactional
-	public void manageEclodedEgg(Egg anEclodedEgg)
+	public void manageEclodedEgg(Egg anEclodedEgg, int chickenAge)
 			throws FarmNotFoundException, FailedOperationException, MaxStockException, InsufficientStockException,
 			NoChickensException, InsufficientPaymentException, NegativeValuesException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
@@ -243,7 +243,7 @@ public class FarmService {
 			eggService.deleteEgg(anEclodedEgg.getId());
 		}
 		
-		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
+		Chicken newChicken = chickenService.createChicken(chickenPrice, chickenAge, farmOwnerId);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 
 	}
@@ -276,8 +276,10 @@ public class FarmService {
 		}
 
 		List<Chicken> actualChickens = chickenService.getAllChickens();
+		
 		// Paso de días para huevos
 		eggService.passDays(numberOfDays);
+		
 		// Paso de días para pollos
 		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
@@ -288,7 +290,6 @@ public class FarmService {
 			this.manageEggExcess(excess);
 		}
 
-		newEggs.removeAll(excess);
 		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
 
 	}
@@ -415,7 +416,7 @@ public class FarmService {
 		soldEggs.stream().forEach(e -> { 
 			eggService.deleteEgg(e.getId());
 			// Aquí borro el ID de la granja porque por algun motivo persiste en memoria y reasigna el huevo
-//			e.setfarmOwner(null);
+			e.setfarmOwner(null);
 		});
 		
 		eggs.removeAll(soldEggs);

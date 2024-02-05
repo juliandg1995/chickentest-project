@@ -79,9 +79,4 @@ public class ChickenService {
 		}
 		return newEggs;
 	}
-
-	public double getChickenDiscount(double sellPrice) {
-		return sellPrice * 0.7;
-	}
-
 }
