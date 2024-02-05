@@ -95,12 +95,12 @@ public class EggService {
 		return eggs.stream().filter(egg -> egg.getIsHatched()).collect(Collectors.toList());
 	}
 	
-	public double getEggDiscount(double price) {
-		return price * 0.5;
-	}
-	
 	public boolean eggStockControl(Long farmId) {
 		return this.getAllEggsByFarmOwnerId(farmId).size() < Farm.getMaxStockOfEggs();
+	}
+	
+	public void addEggs(List<Egg> newEggs) {
+		this.eggRepository.saveAll(newEggs);
 	}
 	
     public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
