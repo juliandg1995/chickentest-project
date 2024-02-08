@@ -4,9 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -213,6 +211,18 @@ public class FarmService {
 			throw new FarmNotFoundException(farmId);
 		}
 	}
+	
+	public void addEggToFarmFromChicken(Chicken chicken) {
+		Long farmOwner = chicken.getFarmOwner().getId();
+		Farm farm = chicken.getFarmOwner();
+		if (eggService.eggStockControl(farmOwner)) {
+			Egg newEgg = eggService.createEgg(getEggsPrice(farm), farmOwner);
+			farm.getEggs().add(newEgg);
+		} else {
+			farm.earnMoney(getEggsPrice(farm));
+		}
+		farmRepository.save(farm);
+	}
 
 	@Transactional
 	public void manageEclodedEgg(Egg anEclodedEgg, int chickenAge)
@@ -276,47 +286,10 @@ public class FarmService {
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
 		}
-
-		List<Chicken> actualChickens = chickenService.getAllChickens();
 		
-		// Paso de días para huevos
 		eggService.passDays(numberOfDays);
 		
-		// Paso de días para pollos
-		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
-
-		// Manjeo de excedente de huevos
-		List<Egg> excess = newEggs.stream().filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
-				.collect(Collectors.toList());
-		
-		// Esto falla cuando una gallina pone más de un huevo.
-		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
-		
-		if (!excess.isEmpty()) {
-			this.manageEggExcess(excess);
-		}
-		
-		// Intenté corregirlo con esta solución, pero falla el hibernate al generar nuevos huevos dentro del foreach..
-//		List<Egg> excess = new ArrayList<Egg>();
-//		
-//		newEggs.forEach( newEgg -> { 
-//			Long farmId = newEgg.getFarmOwner().getId();
-//			if( !eggService.eggStockControl(farmId)){
-//				// Excess es la lista de huevos que voy a vender después
-//				excess.add(newEgg);
-//			} 
-//		     // Antes de vender, agrego todos los huevos al repo de huevos
-//			// Probé agregandolos directamente en la lista de huevos, pero no queda en la lista de la granja.
-//			// actualEggs.add(newEgg);
-//			 eggService.createEgg(newEgg.getSellPrice(), newEgg.getFarmOwner().getId());
-//		});
-//		
-//		// Esto lo acabo de agregar para intentar forzar a que queden en la lista/repo de huevos
-//		// eggService.addEggs(newEggs);
-//		
-//		if (!excess.isEmpty()) {
-//			this.manageEggExcess(excess);
-//		}		
+		chickenService.passDays(numberOfDays);
 		
 	}
 

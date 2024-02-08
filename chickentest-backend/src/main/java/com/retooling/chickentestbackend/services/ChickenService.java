@@ -49,7 +49,27 @@ public class ChickenService {
 		return chickenRepository.findByFarmOwner_Id(farmOwnerId);
 	}
 
-	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
+	public List<Egg> passDays(int numberOfDays) {
+		
+		List<Chicken> chickens = getAllChickens();
+		
+		for(Chicken chicken : chickens) {
+			int totalDays = numberOfDays;
+			while (totalDays > 0) {
+				int daysCounter = chicken.getDaysToEggsCountdown();
+				chicken.passDays(numberOfDays);
+				
+				totalDays = daysCounter;
+				
+				if (chicken.getDaysToEggsCountdown() == 0 && chicken.getAgeInDays() != 0 ) {
+					chicken.resetDaysToEggsCountdown();
+					farmService.addEggToFarmFromChicken(chicken);
+				}
+				
+				chickenRepository.save(chicken);
+				
+			}
+		}
 
 //		return chickens.stream().peek(c -> { 
 //		c.passDays(numberOfDays); 
