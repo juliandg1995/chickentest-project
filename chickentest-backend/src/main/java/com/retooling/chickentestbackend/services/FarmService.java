@@ -282,6 +282,7 @@ public class FarmService {
 	public void passDays(int numberOfDays) throws NegativeValuesException, FailedOperationException,
 			InvalidParameterException, IterationException, MaxStockException, InsufficientStockException,
 			NoEggsException, NegativeValuesException, InsufficientPaymentException {
+		
 		// For Eggs
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
