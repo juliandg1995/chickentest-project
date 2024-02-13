@@ -254,6 +254,7 @@ public class FarmService {
 		}
 		
 		Chicken newChicken = chickenService.createChicken(chickenPrice, chickenAge, farmOwnerId);
+		chickenService.isNewBorn(newChicken, true);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 
 	}

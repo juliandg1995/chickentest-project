@@ -46,6 +46,11 @@ public class ChickenService {
 	public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
 		return chickenRepository.findByFarmOwner_Id(farmOwnerId);
 	}
+	
+	public void isNewBorn(Chicken newBornChicken, boolean value) {
+		newBornChicken.setIsNewBorn(value);
+		chickenRepository.save(newBornChicken);
+	}
 
 	public void passDays(int numberOfDays) {
 		
@@ -53,6 +58,10 @@ public class ChickenService {
 		
 		for(Chicken chicken : chickens) {
 			int totalDays = numberOfDays;
+			if (chicken.getIsNewBorn()) {
+			  double daysDifference = numberOfDays - chicken.getAgeInDays();
+			  totalDays -= daysDifference;
+			}
 			while (totalDays > 0) {
 				int daysCounter = chicken.getDaysToEggsCountdown();
 				chicken.passDays(totalDays);
@@ -64,9 +73,13 @@ public class ChickenService {
 					farmService.addEggToFarmFromChicken(chicken);
 				}
 				
-				chickenRepository.save(chicken);
+//				chickenRepository.save(chicken);
 				
 			}
+			
+			this.isNewBorn(chicken, false);
+			chickenRepository.save(chicken);
+			
 		}
 
 //		return chickens.stream().peek(c -> { 
