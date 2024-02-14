@@ -24,7 +24,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr th:each="egg : ${hatchedEggs}">
+					<tr th:each="egg : ${hatchedEggs}">
 					<td th:text="${egg.id}"></td>
 					<td th:text="${egg.farmOwner.id}"></td>
 					<td th:text="${egg.chickenCountdown}"></td>

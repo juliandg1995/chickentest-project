@@ -177,7 +177,7 @@ public class EggController {
 	}
 	
 	@PostMapping("/unhatchEggsForm")
-	public ResponseEntity<?> unhatchEggsForm(@RequestParam("eggsId") List<String> eggsIdStrings)
+	public String unhatchEggsForm(@RequestParam("eggsId") List<String> eggsIdStrings, Model model)
 	        throws NoEggsException, FailedOperationException {
 
 	    List<Long> eggsId = eggsIdStrings.stream()
@@ -185,17 +185,20 @@ public class EggController {
 	            .collect(Collectors.toList());
 
 	    if (eggsId == null || eggsId.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.emptyList());
+	    	model.addAttribute("errorMessage", ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Collections.emptyList()));
+	    	return "unhatchEggsResponse";
 	    }
 
 	    try {
-	        eggService.unhatchEggs(eggsId);
-	        return ResponseEntity.ok(eggsId);
+	        List<Egg> unhatchedEggs = eggService.hatchEggs(eggsId);
+	        model.addAttribute("unhatchedEggs", unhatchedEggs);
 	    } catch (NoEggsException e) {
-	        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+	    	 model.addAttribute("errorMessage", ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()));
 	    } catch (FailedOperationException e) {
-	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+	    	 model.addAttribute("errorMessage", ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage()));
 	    }
+	    
+        return "unhatchEggsResponse";
 	}
 
 }
