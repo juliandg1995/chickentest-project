@@ -6,7 +6,6 @@ import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
 
 import com.retooling.chickentestbackend.model.Egg;
-import com.retooling.chickentestbackend.model.Farm;
 
 @Repository
 public interface EggRepository extends CrudRepository<Egg, Long>{
