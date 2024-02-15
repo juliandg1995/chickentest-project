@@ -25,7 +25,7 @@ public class Chicken extends Product {
     
     private static int eggAmount = 1;
     
-    private static double defaultSellPrice = 10.00;
+    private static double defaultSellPrice = 30.00;
     
 	/** Constructors **/
     

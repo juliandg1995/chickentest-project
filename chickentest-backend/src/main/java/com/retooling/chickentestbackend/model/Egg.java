@@ -19,7 +19,7 @@ public class Egg extends Product {
 	@Column(name = "ageInDays")
 	private int ageInDays;
 	
-	private static double defaultSellPrice = 5.00;
+	private static double defaultSellPrice = 15.00;
 
 	public Egg() {
 		super();
