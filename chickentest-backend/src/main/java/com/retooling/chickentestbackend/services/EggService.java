@@ -164,7 +164,7 @@ public class EggService {
 	}
 	
 	@SuppressWarnings("unused")
-	public void unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
+	public List<Egg> unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
 		boolean isEmpty = true;
 		
@@ -186,6 +186,7 @@ public class EggService {
 			}
 			
 			eggRepository.saveAll(eggsList);
+			return eggsList;
 			
 		} else {
 			throw new NoEggsException();

@@ -190,7 +190,7 @@ public class EggController {
 	    }
 
 	    try {
-	        List<Egg> unhatchedEggs = eggService.hatchEggs(eggsId);
+	        List<Egg> unhatchedEggs = eggService.unhatchEggs(eggsId);
 	        model.addAttribute("unhatchedEggs", unhatchedEggs);
 	    } catch (NoEggsException e) {
 	    	 model.addAttribute("errorMessage", ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage()));

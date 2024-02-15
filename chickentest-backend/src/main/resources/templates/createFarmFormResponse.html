@@ -1,5 +1,3 @@
-<!-- /resources/templates/createFarmForm.html -->
-
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -20,8 +18,10 @@
     </form>
 
     <div id="successMessage" style="display: none;">
-        <!-- This div will be shown on successful form submission -->
+         This div will be shown on successful form submission 
     </div>
+    
+    <a th:href="@{/home}" class="button">Back to Home</a>
 
     <script>
         function submitForm() {
@@ -50,7 +50,5 @@
             });
         }
     </script>
-    
-    <a th:href="@{/home}" class="button">Back to Home</a>
 </body>
 </html>
