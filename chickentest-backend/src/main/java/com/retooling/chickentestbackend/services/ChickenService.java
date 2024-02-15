@@ -1,6 +1,5 @@
 package com.retooling.chickentestbackend.services;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import com.retooling.chickentestbackend.exceptions.farm.FarmNotFoundException;
 import com.retooling.chickentestbackend.model.Chicken;
-import com.retooling.chickentestbackend.model.Egg;
 import com.retooling.chickentestbackend.model.Farm;
 import com.retooling.chickentestbackend.repository.ChickenRepository;
 
@@ -48,8 +46,41 @@ public class ChickenService {
 	public List<Chicken> getAllChickensByFarmOwnerId(Long farmOwnerId) {
 		return chickenRepository.findByFarmOwner_Id(farmOwnerId);
 	}
+	
+	public void isNewBorn(Chicken newBornChicken, boolean value) {
+		newBornChicken.setIsNewBorn(value);
+		chickenRepository.save(newBornChicken);
+	}
 
-	public List<Egg> passDays(int numberOfDays, List<Chicken> chickens) {
+	public void passDays(int numberOfDays) {
+		
+		List<Chicken> chickens = this.getAllChickens();
+		
+		for(Chicken chicken : chickens) {
+			int totalDays = numberOfDays;
+			if (chicken.getIsNewBorn()) {
+			  double daysDifference = numberOfDays - chicken.getAgeInDays();
+			  totalDays -= daysDifference;
+			}
+			while (totalDays > 0) {
+				int daysCounter = chicken.getDaysToEggsCountdown();
+				chicken.passDays(totalDays);
+				
+				totalDays -= daysCounter;
+				
+				if (chicken.getDaysToEggsCountdown() == 0 && chicken.getAgeInDays() != 0 ) {
+					chicken.resetDaysToEggsCountdown();
+					farmService.addEggToFarmFromChicken(chicken);
+				}
+				
+//				chickenRepository.save(chicken);
+				
+			}
+			
+			this.isNewBorn(chicken, false);
+			chickenRepository.save(chicken);
+			
+		}
 
 //		return chickens.stream().peek(c -> { 
 //		c.passDays(numberOfDays); 
@@ -58,30 +89,25 @@ public class ChickenService {
 //	    .map(c -> { c.resetDaysToEggsCountdown(); chickenRepository.save(c); return c; })	
 //       .flatMap(c -> Stream.of(new Egg(farmService.getEggsPrice(c.getFarmOwner()), c.getFarmOwner()))).collect(Collectors.toList());
 		
-		List<Egg> newEggs = new ArrayList<Egg>();
-
-		for (Chicken chicken : chickens) {
-			int totalDays = numberOfDays;
-			while (totalDays > 0) {
-				int daysCounter = chicken.getDaysToEggsCountdown();
-				chicken.passDays(totalDays);
-				
-				totalDays -= daysCounter;
-
-				if (chicken.getDaysToEggsCountdown() == 0 && chicken.getAgeInDays() != 0) {
-					chicken.resetDaysToEggsCountdown();
-
-					Egg egg = new Egg(farmService.getEggsPrice(chicken.getFarmOwner()), chicken.getFarmOwner());
-					newEggs.add(egg);
-				}
-				chickenRepository.save(chicken);
-			}
-		}
-		return newEggs;
+//		List<Egg> newEggs = new ArrayList<Egg>();
+//
+//		for (Chicken chicken : chickens) {
+//			int totalDays = numberOfDays;
+//			while (totalDays > 0) {
+//				int daysCounter = chicken.getDaysToEggsCountdown();
+//				chicken.passDays(totalDays);
+//				
+//				totalDays -= daysCounter;
+//
+//				if (chicken.getDaysToEggsCountdown() == 0 && chicken.getAgeInDays() != 0) {
+//					chicken.resetDaysToEggsCountdown();
+//
+//					Egg egg = new Egg(farmService.getEggsPrice(chicken.getFarmOwner()), chicken.getFarmOwner());
+//					newEggs.add(egg);
+//				}
+//				chickenRepository.save(chicken);
+//			}
+//		}
+//		return newEggs;
 	}
-
-	public double getChickenDiscount(double sellPrice) {
-		return sellPrice * 0.7;
-	}
-
 }

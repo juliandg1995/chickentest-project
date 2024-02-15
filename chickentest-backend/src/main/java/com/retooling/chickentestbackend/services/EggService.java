@@ -95,12 +95,12 @@ public class EggService {
 		return eggs.stream().filter(egg -> egg.getIsHatched()).collect(Collectors.toList());
 	}
 	
-	public double getEggDiscount(double price) {
-		return price * 0.5;
+	public boolean eggStockControl(Long farmId) {
+		return this.getAllEggsByFarmOwnerId(farmId).size() < Farm.getMaxStockOfEggs();
 	}
 	
-	public boolean eggStockControl(Long farmId) {
-		return this.getAllEggsByFarmOwnerId(farmId).size() != Farm.getMaxStockOfEggs();
+	public void addEggs(List<Egg> newEggs) {
+		this.eggRepository.saveAll(newEggs);
 	}
 	
     public String passDays(int days) throws NegativeValuesException, IterationException, MaxStockException {
@@ -110,15 +110,15 @@ public class EggService {
            
             // For Eggs
             this.getAllEggs().forEach(egg -> {
-
                 if (shouldCancel.get()) {
-                    return;
+                    return; 
                 }
                 try {
+                	int chickenAge = days - egg.getChickenCountdown();
                     egg.passDays(days);
                     
                     if (egg.getIsEcloded()) {
-                    	farmService.manageEclodedEgg(egg);
+                    	farmService.manageEclodedEgg(egg, chickenAge);
                     } else {
                     	eggRepository.save(egg);
                     }
@@ -134,7 +134,7 @@ public class EggService {
     }	
 
 	@SuppressWarnings("unused")
-	public void hatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
+	public List<Egg> hatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
 		boolean isEmpty = true;
 		
@@ -156,6 +156,7 @@ public class EggService {
 			}
 			
 			eggRepository.saveAll(eggsList);
+			return eggsList;
 			
 		} else {
 			throw new NoEggsException();
@@ -164,7 +165,7 @@ public class EggService {
 	}
 	
 	@SuppressWarnings("unused")
-	public void unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
+	public List<Egg> unhatchEggs(List<Long> eggsId) throws NoEggsException, FailedOperationException {
 		
 		boolean isEmpty = true;
 		
@@ -186,6 +187,7 @@ public class EggService {
 			}
 			
 			eggRepository.saveAll(eggsList);
+			return eggsList;
 			
 		} else {
 			throw new NoEggsException();

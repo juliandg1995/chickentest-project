@@ -4,9 +4,7 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 
@@ -34,7 +32,7 @@ public class FarmService {
 
 	//// Dependencies
 
-	@Autowired
+//	@Autowired
 	private FarmRepository farmRepository;
 
 //	@Autowired		
@@ -213,9 +211,21 @@ public class FarmService {
 			throw new FarmNotFoundException(farmId);
 		}
 	}
+	
+	public void addEggToFarmFromChicken(Chicken chicken) {
+		Long farmOwner = chicken.getFarmOwner().getId();
+		Farm farm = chicken.getFarmOwner();
+		if (eggService.eggStockControl(farmOwner)) {
+			Egg newEgg = eggService.createEgg(getEggsPrice(farm), farmOwner);
+			farm.getEggs().add(newEgg);
+		} else {
+			farm.earnMoney(getEggsPrice(farm));
+		}
+		farmRepository.save(farm);
+	}
 
 	@Transactional
-	public void manageEclodedEgg(Egg anEclodedEgg)
+	public void manageEclodedEgg(Egg anEclodedEgg, int chickenAge)
 			throws FarmNotFoundException, FailedOperationException, MaxStockException, InsufficientStockException,
 			NoChickensException, InsufficientPaymentException, NegativeValuesException {
 		// Con el Cascade = ALL de las listas en Farm, se elimina automáticamente de BDD
@@ -243,7 +253,8 @@ public class FarmService {
 			eggService.deleteEgg(anEclodedEgg.getId());
 		}
 		
-		Chicken newChicken = chickenService.createChicken(chickenPrice, 0, farmOwnerId);
+		Chicken newChicken = chickenService.createChicken(chickenPrice, chickenAge, farmOwnerId);
+		chickenService.isNewBorn(newChicken, true);
 		this.addChickenToFarmList(newChicken, farmOwnerId);
 
 	}
@@ -260,8 +271,10 @@ public class FarmService {
 		if (sellPrice == 0) {
 			sellPrice = Egg.getDefaultSellPrice();
 		}
-
-		for (int i = 0; i < excess.size(); i++) {
+		
+		int size = excess.size();
+		for (int i = 0; i < size; i++) {
+			excess.get(i).getFarmOwner().getEggs();
 			this.sellEggs(1, sellPrice, excess.get(i).getFarmOwner().getId());
 		}
 
@@ -270,28 +283,16 @@ public class FarmService {
 	public void passDays(int numberOfDays) throws NegativeValuesException, FailedOperationException,
 			InvalidParameterException, IterationException, MaxStockException, InsufficientStockException,
 			NoEggsException, NegativeValuesException, InsufficientPaymentException {
+		
 		// For Eggs
 		if (numberOfDays < 1) {
 			throw new InvalidParameterException();
 		}
-
-		List<Chicken> actualChickens = chickenService.getAllChickens();
-		// Paso de días para huevos
+		
 		eggService.passDays(numberOfDays);
-		// Paso de días para pollos
-		List<Egg> newEggs = chickenService.passDays(numberOfDays, actualChickens);
 
-		// Manjeo de excedente de huevos
-		List<Egg> excess = newEggs.stream()
-								  .filter(e -> !eggService.eggStockControl(e.getFarmOwner().getId()))
-								  .collect(Collectors.toList());
-		if (!excess.isEmpty()) {
-			this.manageEggExcess(excess);
-		}
-
-		newEggs.removeAll(excess);
-		newEggs.forEach(e -> eggService.createEgg(e.getSellPrice(), e.getFarmOwner().getId()));
-
+		chickenService.passDays(numberOfDays);
+		
 	}
 
 	@Transactional
@@ -416,7 +417,7 @@ public class FarmService {
 		soldEggs.stream().forEach(e -> { 
 			eggService.deleteEgg(e.getId());
 			// Aquí borro el ID de la granja porque por algun motivo persiste en memoria y reasigna el huevo
-//			e.setfarmOwner(null);
+			e.setfarmOwner(null);
 		});
 		
 		eggs.removeAll(soldEggs);

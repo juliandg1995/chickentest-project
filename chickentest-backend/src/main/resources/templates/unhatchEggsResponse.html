@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>Non Hatched Eggs</title>
+	<link rel="stylesheet" href="/css/styles.css">
+</head>
+
+<body>
+	<h1>Non Hatched Eggs</h1>
+
+	<div th:if="${errorMessage != null}">
+		<p style="color: red" th:text="${errorMessage}"></p>
+	</div>
+
+	<div th:if="${unhatchedEggs != null}">
+		<table border="1">
+			<thead>
+				<tr>
+					<th>Egg ID</th>
+					<th>FarmOwnerId</th>
+					<th>Days to Eclode</th>
+				</tr>
+			</thead>
+			<tbody>
+					<tr th:each="egg : ${unhatchedEggs}">
+					<td th:text="${egg.id}"></td>
+					<td th:text="${egg.farmOwner.id}"></td>
+					<td th:text="${egg.chickenCountdown}"></td>
+				</tr>
+			</tbody>
+		</table>
+	<div />
+	<br/>
+	<a th:href="@{/home}" class="button">Back to Home</a>
+</body>
+
+</html>

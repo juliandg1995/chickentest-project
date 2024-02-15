@@ -19,6 +19,8 @@ public class Chicken extends Product {
     @Column
     private int ageInDays;
     
+    private boolean isNewBorn; 
+    
     private static int daysToPutEggs = 10;
     
     private static int eggAmount = 1;
@@ -33,6 +35,7 @@ public class Chicken extends Product {
     
 	public Chicken(double sellPrice,  int age, Farm farmOwner) {
 		super(sellPrice, farmOwner);
+		this.isNewBorn = false;
 		this.daysToEggsCountdown = daysToPutEggs;
 		this.ageInDays = age;
 	}
@@ -66,15 +69,26 @@ public class Chicken extends Product {
 	public static double getDefaultSellPrice(){
 		return defaultSellPrice;
 	}	
+	
+	public boolean getIsNewBorn() {
+		return isNewBorn;
+	}
 
 	public void setAge(int age) {
 		this.ageInDays = age;
 	}
 	
+	public void setIsNewBorn(boolean value) {
+		this.isNewBorn = value;
+	}
+	
 	@Override
 	public void passDays(int days) {
+		
 		for (int i = 0 ; i < days; i++) {
-			ageInDays++;
+			if (!isNewBorn) {
+				ageInDays++;
+			}
 			this.daysToEggsCountdown--;
 			if (daysToEggsCountdown == 0) {
 				break;
